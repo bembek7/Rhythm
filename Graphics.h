@@ -11,7 +11,7 @@ public:
 	~Graphics() = default;
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
-	void Draw();
+	void Draw(const float red);
 
 private:
 	void CheckHR(HRESULT hr);

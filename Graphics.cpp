@@ -58,9 +58,9 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 	pContext->RSSetViewports(1u, &viewport);
 }
 
-void Graphics::Draw()
+void Graphics::Draw(const float red)
 {
-	const float color[] = { 1.f, 0.f, 0.f, 1.0f};
+	const float color[] = { red, 0.f, 0.f, 1.0f};
 	pContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
 	CheckHR(pSwapChain->Present(1u, 0u));
 }

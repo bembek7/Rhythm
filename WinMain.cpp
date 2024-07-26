@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <system_error>
 #include "Graphics.h"
+#include <chrono>
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -50,7 +51,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR pCmdLi
 	ShowWindow(hWnd, nCmdShow);
 
 	Graphics graphics = Graphics(hWnd, windowWidth, windowHeight);
-
+	
+	auto last = std::chrono::steady_clock::now();
+	auto start = std::chrono::steady_clock::now();
 	MSG msg = { };
 	while (true)
 	{
@@ -65,7 +68,10 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR pCmdLi
 			DispatchMessageA(&msg);
 		}
 
-		graphics.Draw();
+		const float deltaTime = std::chrono::duration<float>(std::chrono::steady_clock::now() - last).count();
+		last = std::chrono::steady_clock::now();
+		const float timeFromStart = std::chrono::duration<float>(std::chrono::steady_clock::now() - start).count();
+		graphics.Draw((std::sin(timeFromStart) + 1.f) / 2);
 	}
 
 	return 0;
