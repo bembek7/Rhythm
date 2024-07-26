@@ -1,4 +1,6 @@
 #include "Graphics.h"
+#include <stdexcept>
+#include <comdef.h>
 
 Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 {
@@ -24,7 +26,7 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	HRESULT hr = D3D11CreateDeviceAndSwapChain(
+	CheckHR(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
@@ -37,11 +39,11 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 		&pDevice,
 		nullptr,
 		&pContext
-	);
+	));
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> pBackBuffer;
-	pSwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer);
-	pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pRenderTargetView);
+	CheckHR(pSwapChain->GetBuffer(0u, __uuidof(ID3D11Resource), &pBackBuffer));
+	CheckHR(pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pRenderTargetView));
 
 	pContext->OMSetRenderTargets(1u, pRenderTargetView.GetAddressOf(), nullptr);
 
@@ -58,7 +60,16 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 
 void Graphics::Draw()
 {
-	const float color[] = { 1.0f, 0.f, 0.f, 1.0f };
+	const float color[] = { 1.f, 0.f, 0.f, 1.0f};
 	pContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
-	pSwapChain->Present(1u, 0u);
+	CheckHR(pSwapChain->Present(1u, 0u));
+}
+
+void Graphics::CheckHR(HRESULT hr)
+{
+	if (FAILED(hr)) {
+		_com_error err = _com_error(hr);
+		MessageBoxA(nullptr, err.ErrorMessage(), nullptr, MB_ICONERROR | MB_OK);
+		throw std::runtime_error("HRESULT failed");
+	}
 }

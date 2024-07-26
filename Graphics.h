@@ -14,6 +14,8 @@ public:
 	void Draw();
 
 private:
+	void CheckHR(HRESULT hr);
+private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> pDevice;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext;
