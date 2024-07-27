@@ -35,17 +35,17 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 		0,
 		D3D11_SDK_VERSION,
 		&scd,
-		&pSwapChain,
-		&pDevice,
+		&swapChain,
+		&device,
 		nullptr,
-		&pContext
+		&context
 	));
 
-	Microsoft::WRL::ComPtr<ID3D11Resource> pBackBuffer;
-	CheckHR(pSwapChain->GetBuffer(0u, __uuidof(ID3D11Resource), &pBackBuffer));
-	CheckHR(pDevice->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &pRenderTargetView));
+	Microsoft::WRL::ComPtr<ID3D11Resource> backBuffer;
+	CheckHR(swapChain->GetBuffer(0u, __uuidof(ID3D11Resource), &backBuffer));
+	CheckHR(device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView));
 
-	pContext->OMSetRenderTargets(1u, pRenderTargetView.GetAddressOf(), nullptr);
+	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), nullptr);
 
 	D3D11_VIEWPORT viewport = {};
 	viewport.TopLeftX = 0;
@@ -55,14 +55,14 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 	viewport.MaxDepth = 1.f;
 	viewport.MinDepth = 0.f;
 
-	pContext->RSSetViewports(1u, &viewport);
+	context->RSSetViewports(1u, &viewport);
 }
 
 void Graphics::Draw(const float red)
 {
 	const float color[] = { red, 0.f, 0.f, 1.0f};
-	pContext->ClearRenderTargetView(pRenderTargetView.Get(), color);
-	CheckHR(pSwapChain->Present(1u, 0u));
+	context->ClearRenderTargetView(renderTargetView.Get(), color);
+	CheckHR(swapChain->Present(1u, 0u));
 }
 
 void Graphics::CheckHR(HRESULT hr)

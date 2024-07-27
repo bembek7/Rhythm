@@ -1,13 +1,14 @@
 #include "Window.h"
 #include <system_error>
 #include <optional>
+#include <cassert>
 
 Window::Window(HINSTANCE hInstance)
 {
 	WNDCLASSEX windowClass = {};
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.style = 0u;
-	windowClass.lpfnWndProc = Window::WindowProc;
+	windowClass.lpfnWndProc = Window::WindowProcBeforeCreation;
 	windowClass.lpszClassName = winClassName;
 
 	RegisterClassEx(&windowClass);
@@ -24,7 +25,7 @@ Window::Window(HINSTANCE hInstance)
 		nullptr,
 		nullptr,
 		hInstance,
-		nullptr
+		this
 	);
 
 	if (!hWnd)
@@ -67,19 +68,41 @@ unsigned int Window::GetWindowHeight() const noexcept
 	return windowHeight;
 }
 
-LRESULT Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (uMsg == WM_CREATE)
+	{
+		const CREATESTRUCTW* const csw = reinterpret_cast<CREATESTRUCTW*>(lParam);
+		Window* const window = static_cast<Window*>(csw->lpCreateParams);
+
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));
+		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::WindowProcAfterCreation));
+
+		assert(window != nullptr);
+		return window->HandleMessage(hWnd, uMsg, wParam, lParam);
+	}
+	
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT Window::WindowProcAfterCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	Window* const window = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
+	return window->HandleMessage(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT Window::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
 	case WM_KEYDOWN:
-		if (wParam == 'K')
-		{
-			SetWindowText(hwnd, "Key down");
-		}
+		keys[wParam] = true;
 		break;
-	case WM_CLOSE:
-		PostQuitMessage(0);
-		return 0;
+	case WM_KEYUP:
+		keys[wParam] = false;
+		break;
 	}
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }

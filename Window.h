@@ -15,10 +15,13 @@ public:
 	unsigned int GetWindowHeight() const noexcept;
 
 private:
-	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK WindowProcAfterCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	
 private:
 	HWND hWnd;
+	bool keys[255] = { false };
 	static constexpr char winClassName[] = "RythmWindow";
 	const unsigned int windowWidth = 800;
 	const unsigned int windowHeight = 600;
