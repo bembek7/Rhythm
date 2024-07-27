@@ -69,7 +69,7 @@ void Graphics::CheckHR(HRESULT hr)
 {
 	if (FAILED(hr)) {
 		_com_error err = _com_error(hr);
-		MessageBoxA(nullptr, err.ErrorMessage(), nullptr, MB_ICONERROR | MB_OK);
+		MessageBox(nullptr, err.ErrorMessage(), nullptr, MB_ICONERROR | MB_OK);
 		throw std::runtime_error("HRESULT failed");
 	}
 }
