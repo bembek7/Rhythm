@@ -70,6 +70,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);SoLoud/include/</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);SoLoud/include/</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);SoLoud/include/</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);SoLoud/include/</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -136,12 +148,75 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="SoLoud\audiosource\wav\dr_impl.cpp" />
+    <ClCompile Include="SoLoud\audiosource\wav\soloud_wav.cpp" />
+    <ClCompile Include="SoLoud\audiosource\wav\soloud_wavstream.cpp" />
+    <ClCompile Include="SoLoud\audiosource\wav\stb_vorbis.c" />
+    <ClCompile Include="SoLoud\backend\winmm\soloud_winmm.cpp" />
+    <ClCompile Include="SoLoud\core\soloud.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_audiosource.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_bus.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_3d.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_basicops.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_faderops.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_filterops.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_getters.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_setters.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_voicegroup.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_core_voiceops.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_fader.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_fft.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_fft_lut.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_file.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_filter.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_queue.cpp" />
+    <ClCompile Include="SoLoud\core\soloud_thread.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SoLoud\audiosource\wav\dr_flac.h" />
+    <ClInclude Include="SoLoud\audiosource\wav\dr_mp3.h" />
+    <ClInclude Include="SoLoud\audiosource\wav\dr_wav.h" />
+    <ClInclude Include="SoLoud\audiosource\wav\stb_vorbis.h" />
+    <ClInclude Include="SoLoud\include\soloud.h" />
+    <ClInclude Include="SoLoud\include\soloud_audiosource.h" />
+    <ClInclude Include="SoLoud\include\soloud_bassboostfilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_biquadresonantfilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_bus.h" />
+    <ClInclude Include="SoLoud\include\soloud_c.h" />
+    <ClInclude Include="SoLoud\include\soloud_dcremovalfilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_echofilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_error.h" />
+    <ClInclude Include="SoLoud\include\soloud_fader.h" />
+    <ClInclude Include="SoLoud\include\soloud_fft.h" />
+    <ClInclude Include="SoLoud\include\soloud_fftfilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_file.h" />
+    <ClInclude Include="SoLoud\include\soloud_file_hack_off.h" />
+    <ClInclude Include="SoLoud\include\soloud_file_hack_on.h" />
+    <ClInclude Include="SoLoud\include\soloud_filter.h" />
+    <ClInclude Include="SoLoud\include\soloud_flangerfilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_internal.h" />
+    <ClInclude Include="SoLoud\include\soloud_lofifilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_monotone.h" />
+    <ClInclude Include="SoLoud\include\soloud_openmpt.h" />
+    <ClInclude Include="SoLoud\include\soloud_queue.h" />
+    <ClInclude Include="SoLoud\include\soloud_robotizefilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_sfxr.h" />
+    <ClInclude Include="SoLoud\include\soloud_speech.h" />
+    <ClInclude Include="SoLoud\include\soloud_tedsid.h" />
+    <ClInclude Include="SoLoud\include\soloud_thread.h" />
+    <ClInclude Include="SoLoud\include\soloud_vic.h" />
+    <ClInclude Include="SoLoud\include\soloud_vizsn.h" />
+    <ClInclude Include="SoLoud\include\soloud_wav.h" />
+    <ClInclude Include="SoLoud\include\soloud_waveshaperfilter.h" />
+    <ClInclude Include="SoLoud\include\soloud_wavstream.h" />
     <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Rythm.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

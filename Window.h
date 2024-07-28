@@ -1,6 +1,7 @@
 #pragma once
 #include<Windows.h>
 #include <optional>
+#include <string>
 
 class Window
 {
@@ -13,6 +14,7 @@ public:
 	HWND& GetHWNDRef() noexcept;
 	unsigned int GetWindowWidth() const noexcept;
 	unsigned int GetWindowHeight() const noexcept;
+	void SetWidnowTitle(std::string newTitle) noexcept;
 
 private:
 	static LRESULT CALLBACK WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

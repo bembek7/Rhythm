@@ -2,6 +2,7 @@
 #include <system_error>
 #include <optional>
 #include <cassert>
+#include <string>
 
 Window::Window(HINSTANCE hInstance)
 {
@@ -68,6 +69,11 @@ unsigned int Window::GetWindowHeight() const noexcept
 	return windowHeight;
 }
 
+void Window::SetWidnowTitle(std::string newTitle) noexcept
+{
+	SetWindowText(hWnd, newTitle.c_str());
+}
+
 LRESULT Window::WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_CREATE)
@@ -102,6 +108,9 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	case WM_KEYUP:
 		keys[wParam] = false;
 		break;
+	case WM_CLOSE:
+		PostQuitMessage(0);
+		return 0;
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
