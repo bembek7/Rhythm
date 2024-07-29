@@ -4,7 +4,7 @@
 #include <cassert>
 #include <string>
 
-Window::Window(HINSTANCE hInstance)
+Window::Window()
 {
 	WNDCLASSEX windowClass = {};
 	windowClass.cbSize = sizeof(WNDCLASSEX);
@@ -25,13 +25,13 @@ Window::Window(HINSTANCE hInstance)
 		windowHeight,
 		nullptr,
 		nullptr,
-		hInstance,
+		GetModuleHandle(nullptr),
 		this
 	);
 
 	if (!hWnd)
 	{
-		MessageBox(nullptr, std::system_category().message(GetLastError()).c_str(), nullptr, MB_ICONERROR | MB_OK);
+		throw std::runtime_error(std::system_category().message(GetLastError()));
 	}
 
 	ShowWindow(hWnd, SW_SHOW);
@@ -40,7 +40,7 @@ Window::Window(HINSTANCE hInstance)
 std::optional<int> Window::ProcessMessages()
 {
 	MSG msg = { };
-	while (PeekMessage(&msg, NULL, 0u, 0u, PM_REMOVE))
+	while (PeekMessage(&msg, nullptr, 0u, 0u, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
 		{

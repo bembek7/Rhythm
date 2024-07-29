@@ -1,6 +1,17 @@
 #include "Graphics.h"
 #include <stdexcept>
 #include <comdef.h>
+#include <filesystem>
+
+
+#define CHECK_HR(hr) \
+    if (FAILED(hr)) { \
+        _com_error err(hr); \
+        const std::filesystem::path filePath(__FILE__); \
+        std::stringstream ss; \
+        ss << err.ErrorMessage() << std::endl << filePath.filename() << " " << __LINE__; \
+        throw std::runtime_error(ss.str()); \
+    }
 
 Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 {
@@ -26,7 +37,7 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 	swapCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	CheckHR(D3D11CreateDeviceAndSwapChain(
+	CHECK_HR(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
@@ -42,8 +53,8 @@ Graphics::Graphics(HWND& hWnd, int windowWidth, int windowHeight)
 	));
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> backBuffer;
-	CheckHR(swapChain->GetBuffer(0u, __uuidof(ID3D11Resource), &backBuffer));
-	CheckHR(device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView));
+	CHECK_HR(swapChain->GetBuffer(0u, __uuidof(ID3D11Resource), &backBuffer));
+	CHECK_HR(device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTargetView));
 
 	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), nullptr);
 
@@ -62,14 +73,5 @@ void Graphics::Draw(const float red)
 {
 	const float color[] = { red, 0.f, 0.f, 1.0f};
 	context->ClearRenderTargetView(renderTargetView.Get(), color);
-	CheckHR(swapChain->Present(1u, 0u));
-}
-
-void Graphics::CheckHR(HRESULT hr)
-{
-	if (FAILED(hr)) {
-		_com_error err = _com_error(hr);
-		MessageBox(nullptr, err.ErrorMessage(), nullptr, MB_ICONERROR | MB_OK);
-		throw std::runtime_error("HRESULT failed");
-	}
+	CHECK_HR(swapChain->Present(1u, 0u));
 }

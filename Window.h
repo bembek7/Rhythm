@@ -6,7 +6,7 @@
 class Window
 {
 public:
-	Window(HINSTANCE hInstance);
+	Window();
 	~Window() = default;
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;

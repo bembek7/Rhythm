@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\dr_impl.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\soloud_wav.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SoLoud\audiosource\wav\dr_flac.h" />
