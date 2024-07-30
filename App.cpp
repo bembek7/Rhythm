@@ -8,7 +8,7 @@
 int App::Run()
 {
 	graphics = std::make_unique<Graphics>(window.GetHWNDRef(), window.GetWindowWidth(), window.GetWindowHeight());
-
+	
 	auto last = std::chrono::steady_clock::now();
 	auto start = std::chrono::steady_clock::now();
 
