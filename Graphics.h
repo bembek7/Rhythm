@@ -14,7 +14,7 @@ public:
 	void Draw(const float red);
 
 private:
-	void CheckHR(HRESULT hr);
+	void DrawTriangle();
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
