@@ -2,6 +2,7 @@
 #include "BetterWindows.h"
 #include <optional>
 #include <string>
+#include <queue>
 
 
 class Window
@@ -16,6 +17,8 @@ public:
 	unsigned int GetWindowWidth() const noexcept;
 	unsigned int GetWindowHeight() const noexcept;
 	void SetWidnowTitle(std::string newTitle) noexcept;
+	bool IsKeyQueueEmpty() const noexcept;
+	short PopPressedKey() noexcept;
 
 private:
 	static LRESULT CALLBACK WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -23,6 +26,7 @@ private:
 	LRESULT HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 private:
+	std::queue<short> keyPressedEvents;
 	HWND hWnd;
 	bool keys[255] = { false };
 	static constexpr char winClassName[] = "RythmWindow";

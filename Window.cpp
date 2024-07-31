@@ -75,6 +75,20 @@ void Window::SetWidnowTitle(std::string newTitle) noexcept
 	SetWindowText(hWnd, newTitle.c_str());
 }
 
+bool Window::IsKeyQueueEmpty() const noexcept
+{
+	return keyPressedEvents.empty();
+}
+
+short Window::PopPressedKey() noexcept
+{
+	assert(!keyPressedEvents.empty());
+	const short pressedKey = keyPressedEvents.front();
+	keyPressedEvents.pop();
+	return pressedKey;
+
+}
+
 LRESULT Window::WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_CREATE)
@@ -103,8 +117,22 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
 	switch (uMsg)
 	{
+	case WM_LBUTTONDOWN:
+		if (!keys[VK_LBUTTON])
+		{
+			keyPressedEvents.push(wParam);
+		}
+		keys[VK_LBUTTON] = true;
+		break;
 	case WM_KEYDOWN:
+		if (!keys[wParam])
+		{
+			keyPressedEvents.push(wParam);
+		}
 		keys[wParam] = true;
+		break;
+	case WM_LBUTTONUP:
+		keys[VK_LBUTTON] = false;
 		break;
 	case WM_KEYUP:
 		keys[wParam] = false;

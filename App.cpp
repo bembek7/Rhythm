@@ -22,6 +22,8 @@ int App::Run()
 
 	Mesh box = Mesh(graphics, "box.obj");
 
+	int mouseCounter = 0;
+
 	while (true)
 	{
 		if (const auto ecode = Window::ProcessMessages())
@@ -32,6 +34,20 @@ int App::Run()
 		const float deltaTime = std::chrono::duration<float>(std::chrono::steady_clock::now() - last).count();
 		last = std::chrono::steady_clock::now();
 
+
+		while (!window.IsKeyQueueEmpty())
+		{
+			const short keyPressed = window.PopPressedKey();
+			if (keyPressed == VK_LBUTTON)
+			{
+				mouseCounter++;
+				std::stringstream ss;
+				ss << mouseCounter;
+				window.SetWidnowTitle(ss.str());
+
+			}
+		}
+		
 		graphics.BeginFrame();
 		box.Draw(graphics);
 		graphics.EndFrame();
