@@ -1,8 +1,8 @@
 #pragma once
-#define NOMINMAX
-#include<Windows.h>
+#include "BetterWindows.h"
 #include <optional>
 #include <string>
+
 
 class Window
 {
@@ -21,7 +21,7 @@ private:
 	static LRESULT CALLBACK WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK WindowProcAfterCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	
+
 private:
 	HWND hWnd;
 	bool keys[255] = { false };
@@ -29,4 +29,3 @@ private:
 	const unsigned int windowWidth = 800;
 	const unsigned int windowHeight = 600;
 };
-

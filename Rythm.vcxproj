@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\dr_impl.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\soloud_wav.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\soloud_wavstream.cpp" />
@@ -181,7 +182,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="BetterWindows.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SoLoud\audiosource\wav\dr_flac.h" />
     <ClInclude Include="SoLoud\audiosource\wav\dr_mp3.h" />
@@ -219,6 +222,7 @@
     <ClInclude Include="SoLoud\include\soloud_wav.h" />
     <ClInclude Include="SoLoud\include\soloud_waveshaperfilter.h" />
     <ClInclude Include="SoLoud\include\soloud_wavstream.h" />
+    <ClInclude Include="ThrowMacros.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

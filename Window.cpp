@@ -3,6 +3,7 @@
 #include <optional>
 #include <cassert>
 #include <string>
+#include <errhandlingapi.h>
 
 Window::Window()
 {
@@ -87,7 +88,7 @@ LRESULT Window::WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 		assert(window != nullptr);
 		return window->HandleMessage(hWnd, uMsg, wParam, lParam);
 	}
-	
+
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 

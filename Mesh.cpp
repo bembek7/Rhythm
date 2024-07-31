@@ -1,0 +1,121 @@
+#include "Mesh.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <stdexcept>
+#include <d3dcompiler.h>
+#include "ThrowMacros.h"
+#include <string>
+#include "Graphics.h"
+#include <cassert>
+#include <d3d11.h>
+
+Mesh::Mesh(Graphics& graphics, std::string fileName)
+{
+	LoadModel(fileName);
+	assert(vertices.size() > 0 && indices.size() > 0);
+
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
+	CHECK_HR(D3DReadFileToBlob(L"PixelShader.cso", &blob));
+	CHECK_HR(graphics.device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
+
+	D3D11_BUFFER_DESC indexBufferDesc = {};
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.CPUAccessFlags = 0u;
+	indexBufferDesc.MiscFlags = 0u;
+	indexBufferDesc.ByteWidth = (UINT)indices.size() * sizeof(unsigned int);
+	indexBufferDesc.StructureByteStride = sizeof(unsigned int);
+
+	D3D11_SUBRESOURCE_DATA indexBufferData = {};
+	indexBufferData.pSysMem = indices.data();
+
+	CHECK_HR(graphics.device->CreateBuffer(&indexBufferDesc, &indexBufferData, &indexBuffer));
+
+	D3D11_BUFFER_DESC vertexBufferDesc = {};
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.CPUAccessFlags = 0u;
+	vertexBufferDesc.MiscFlags = 0u;
+	vertexBufferDesc.ByteWidth = (UINT)vertices.size() * sizeof(Vertex);
+	vertexBufferDesc.StructureByteStride = sizeof(Vertex);
+
+	D3D11_SUBRESOURCE_DATA vertexBufferData = {};
+	vertexBufferData.pSysMem = vertices.data();
+
+	CHECK_HR(graphics.device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &vertexBuffer));
+
+	D3D11_BUFFER_DESC constantBufferDesc{};
+	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	constantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	constantBufferDesc.MiscFlags = 0u;
+	constantBufferDesc.ByteWidth = sizeof(transformBuffer);
+	constantBufferDesc.StructureByteStride = 0u;
+	D3D11_SUBRESOURCE_DATA constanBufferData = {};
+
+	constanBufferData.pSysMem = &transformBuffer;
+	CHECK_HR(graphics.device->CreateBuffer(&constantBufferDesc, &constanBufferData, &constantTransformBuffer));
+
+	CHECK_HR(D3DReadFileToBlob(L"VertexShader.cso", &blob));
+	CHECK_HR(graphics.device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));
+
+	D3D11_INPUT_ELEMENT_DESC inputLayoutDesc[] =
+	{
+		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
+	};
+	CHECK_HR(graphics.device->CreateInputLayout(inputLayoutDesc, (UINT)std::size(inputLayoutDesc), blob->GetBufferPointer(), blob->GetBufferSize(), &inputLayout));
+}
+
+void Mesh::Draw(Graphics& graphics)
+{
+	graphics.context->PSSetShader(pixelShader.Get(), nullptr, 0u);
+
+	graphics.context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
+
+	const UINT stride = sizeof(Vertex);
+	const UINT offset = 0u;
+	graphics.context->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
+
+	graphics.context->VSSetConstantBuffers(0u, 1u, constantTransformBuffer.GetAddressOf());
+
+	graphics.context->VSSetShader(vertexShader.Get(), nullptr, 0u);
+
+	graphics.context->IASetInputLayout(inputLayout.Get());
+
+	graphics.DrawIndexed(indices.size());
+}
+
+void Mesh::LoadModel(std::string fileName)
+{
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile(fileName,
+		aiProcess_CalcTangentSpace |
+		aiProcess_Triangulate |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_SortByPType);
+
+	// If the import failed, report it
+	if (!scene)
+	{
+		throw std::runtime_error(importer.GetErrorString());
+	}
+
+	const unsigned int numVertices = scene->mMeshes[0]->mNumVertices;
+
+	vertices.reserve(numVertices);
+
+	for (size_t i = 0; i < numVertices; i++)
+	{
+		vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z));
+	}
+
+	for (size_t i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
+	{
+		for (size_t j = 0; j < scene->mMeshes[0]->mFaces[i].mNumIndices; j++)
+		{
+			indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
+		}
+	}
+}

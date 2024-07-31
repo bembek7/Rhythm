@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 *.cso
+*.gltf
 
 # User-specific files
 *.rsuser
@@ -364,4 +365,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /SoLoud
-/PixelShader.cso
+/assimp
+/assimp-vc140-mt.dll
