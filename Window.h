@@ -19,6 +19,7 @@ public:
 	void SetWidnowTitle(std::string newTitle) noexcept;
 	bool IsKeyQueueEmpty() const noexcept;
 	short PopPressedKey() noexcept;
+	bool IsKeyPressed(short key) const noexcept;
 
 private:
 	static LRESULT CALLBACK WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

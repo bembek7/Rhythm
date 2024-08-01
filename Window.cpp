@@ -89,6 +89,11 @@ short Window::PopPressedKey() noexcept
 
 }
 
+bool Window::IsKeyPressed(short key) const noexcept
+{
+	return keys[key];
+}
+
 LRESULT Window::WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_CREATE)
@@ -117,6 +122,9 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
 	switch (uMsg)
 	{
+	case WM_KILLFOCUS:
+		std::fill(keys, keys + std::size(keys), false);
+		break;
 	case WM_LBUTTONDOWN:
 		if (!keys[VK_LBUTTON])
 		{

@@ -11,8 +11,14 @@ public:
 	Mesh(Graphics& graphics, std::string fileName);
 
 	void Draw(Graphics& graphics);
+
+	void AddRotation(const DirectX::XMVECTOR& rotationToAdd) noexcept;
+	void AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept;
+
 private:
+	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
 	void LoadModel(std::string fileName);
+	void UpdateTransformBuffer(Graphics& graphics);
 private:
 	struct Vertex {
 		Vertex(float x, float y, float z) : pos(x, y, z) {}
@@ -28,17 +34,19 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 
+	DirectX::XMVECTOR position = { 0.f, 0.f, 3.f };
+	DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f };
+
 	struct ConstantBuffer
 	{
 		DirectX::XMMATRIX transform;
 	};
-	const ConstantBuffer transformBuffer =
+	ConstantBuffer transformBuffer =
 	{
 		{
 			DirectX::XMMatrixTranspose(
-				DirectX::XMMatrixRotationZ(0) *
-				DirectX::XMMatrixRotationX(0) *
-				DirectX::XMMatrixTranslation(0.0f,0.0f,0.0f + 3.0f) *
+				DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) *
+				DirectX::XMMatrixTranslationFromVector(position) *
 				DirectX::XMMatrixPerspectiveLH(1.0f,3.0f / 4.0f,0.5f,10.0f)
 			)
 		}

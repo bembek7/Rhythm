@@ -47,6 +47,39 @@ int App::Run()
 
 			}
 		}
+
+		if (window.IsKeyPressed('W'))
+		{
+			box.AddPosition({ 0.f,0.f,0.1f });
+		}
+		if (window.IsKeyPressed('S'))
+		{
+			box.AddPosition({ 0.f,0.f,-0.1f });
+		}
+		if (window.IsKeyPressed('Q'))
+		{
+			box.AddRotation({ 0.f,0.f,0.1f });
+		}
+		if (window.IsKeyPressed('E'))
+		{
+			box.AddRotation({ 0.f,0.f,-0.1f });
+		}
+		if (window.IsKeyPressed(VK_RIGHT))
+		{
+			box.AddRotation({ 0.f,0.1f,0.f });
+		}
+		if (window.IsKeyPressed(VK_LEFT))
+		{
+			box.AddRotation({ 0.f,-0.1f,0.f });
+		}
+		if (window.IsKeyPressed(VK_UP))
+		{
+			box.AddRotation({ 0.1f,0.f,0.f });
+		}
+		if (window.IsKeyPressed(VK_DOWN))
+		{
+			box.AddRotation({ -0.1f,0.f,0.f });
+		}
 		
 		graphics.BeginFrame();
 		box.Draw(graphics);

@@ -77,6 +77,7 @@ void Mesh::Draw(Graphics& graphics)
 	const UINT offset = 0u;
 	graphics.context->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
 
+	UpdateTransformBuffer(graphics);
 	graphics.context->VSSetConstantBuffers(0u, 1u, constantTransformBuffer.GetAddressOf());
 
 	graphics.context->VSSetShader(vertexShader.Get(), nullptr, 0u);
@@ -84,6 +85,27 @@ void Mesh::Draw(Graphics& graphics)
 	graphics.context->IASetInputLayout(inputLayout.Get());
 
 	graphics.DrawIndexed(indices.size());
+}
+
+void Mesh::AddRotation(const DirectX::XMVECTOR& rotationToAdd) noexcept
+{
+	rotation = DirectX::XMVectorAdd(rotation, rotationToAdd);
+	transformBuffer = { GetTransformMatrix() };
+}
+
+void Mesh::AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept
+{
+	position = DirectX::XMVectorAdd(position, posiationToAdd);
+	transformBuffer = { GetTransformMatrix() };
+}
+
+DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
+{
+	return DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) *
+		DirectX::XMMatrixTranslationFromVector(position) *
+		DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
+	);
 }
 
 void Mesh::LoadModel(std::string fileName)
@@ -118,4 +140,12 @@ void Mesh::LoadModel(std::string fileName)
 			indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
 		}
 	}
+}
+
+void Mesh::UpdateTransformBuffer(Graphics& graphics)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	CHECK_HR(graphics.context->Map(constantTransformBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
+	memcpy(mappedSubresource.pData, &transformBuffer, sizeof(transformBuffer));
+	graphics.context->Unmap(constantTransformBuffer.Get(), 0u);
 }
