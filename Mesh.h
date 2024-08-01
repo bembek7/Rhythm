@@ -14,20 +14,17 @@ public:
 
 	void AddRotation(const DirectX::XMVECTOR& rotationToAdd) noexcept;
 	void AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept;
+	void Scale(float scaleFactor) noexcept;
 
 private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
 	void LoadModel(std::string fileName);
 	void UpdateTransformBuffer(Graphics& graphics);
 private:
-	/*struct Vertex {
+	struct Vertex {
 		Vertex(float x, float y, float z, float nx, float ny, float nz) : position(x, y, z), normal(nx, ny, nz) {}
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 normal;
-	};*/
-	struct Vertex {
-		Vertex(float x, float y, float z) : pos(x, y, z) {}
-		DirectX::XMFLOAT3 pos;
 	};
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
@@ -41,6 +38,7 @@ private:
 
 	DirectX::XMVECTOR position = { 0.f, 0.f, 3.f };
 	DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f };
+	DirectX::XMVECTOR scale = { 1.f, 1.f, 1.f };
 
 	struct ConstantTransformBuffer
 	{

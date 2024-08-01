@@ -20,7 +20,7 @@ int App::Run()
 
 	//gSoloud.play(gWave); // Play the wave
 
-	Mesh box = Mesh(graphics, "box.obj");
+	Mesh box = Mesh(graphics, "WusonOBJ.obj");
 	Camera camera;
 
 	graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.7f, 50.0f));
@@ -82,6 +82,14 @@ int App::Run()
 		if (window.IsKeyPressed(VK_DOWN))
 		{
 			box.AddRotation({ -0.1f,0.f,0.f });
+		}
+		if (window.IsKeyPressed('A'))
+		{
+			box.Scale(0.9f);
+		}
+		if (window.IsKeyPressed('D'))
+		{
+			box.Scale(1.1f);
 		}
 		
 		graphics.SetCamera(camera.GetMatrix());

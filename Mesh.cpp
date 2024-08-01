@@ -16,7 +16,7 @@ Mesh::Mesh(Graphics& graphics, std::string fileName)
 	assert(vertices.size() > 0 && indices.size() > 0);
 
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
-	CHECK_HR(D3DReadFileToBlob(L"PixelShader.cso", &blob));
+	CHECK_HR(D3DReadFileToBlob(L"PhongPS.cso", &blob));
 	CHECK_HR(graphics.device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
 
 	D3D11_BUFFER_DESC indexBufferDesc = {};
@@ -57,13 +57,13 @@ Mesh::Mesh(Graphics& graphics, std::string fileName)
 	constanBufferData.pSysMem = &transformBuffer;
 	CHECK_HR(graphics.device->CreateBuffer(&constantBufferDesc, &constanBufferData, &constantTransformBuffer));
 
-	CHECK_HR(D3DReadFileToBlob(L"VertexShader.cso", &blob));
+	CHECK_HR(D3DReadFileToBlob(L"PhongVS.cso", &blob));
 	CHECK_HR(graphics.device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));
 
 	D3D11_INPUT_ELEMENT_DESC inputLayoutDesc[] =
 	{
 		{"POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
-		//{"NORMAL", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"NORMAL", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
 	CHECK_HR(graphics.device->CreateInputLayout(inputLayoutDesc, (UINT)std::size(inputLayoutDesc), blob->GetBufferPointer(), blob->GetBufferSize(), &inputLayout));
 }
@@ -98,9 +98,14 @@ void Mesh::AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept
 	position = DirectX::XMVectorAdd(position, posiationToAdd);
 }
 
+void Mesh::Scale(float scaleFactor) noexcept
+{
+	scale = DirectX::XMVectorScale(scale, scaleFactor);
+}
+
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 {
-	return DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
+	return DirectX::XMMatrixScalingFromVector(scale) * DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
 }
 
 void Mesh::LoadModel(std::string fileName)
@@ -123,15 +128,11 @@ void Mesh::LoadModel(std::string fileName)
 
 	vertices.reserve(numVertices);
 	
-	//assert(scene->mMeshes[0]->HasNormals());
-	//for (size_t i = 0; i < numVertices; i++)
-	//{
-	//	vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z,
-	//		scene->mMeshes[0]->mNormals[i].x, scene->mMeshes[0]->mNormals[i].y, scene->mMeshes[0]->mNormals[i].z));
-	//}
+	assert(scene->mMeshes[0]->HasNormals());
 	for (size_t i = 0; i < numVertices; i++)
 	{
-		vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z));
+		vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z,
+		scene->mMeshes[0]->mNormals[i].x, scene->mMeshes[0]->mNormals[i].y, scene->mMeshes[0]->mNormals[i].z));
 	}
 
 	for (size_t i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
