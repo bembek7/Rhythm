@@ -62,7 +62,8 @@ Mesh::Mesh(Graphics& graphics, std::string fileName)
 
 	D3D11_INPUT_ELEMENT_DESC inputLayoutDesc[] =
 	{
-		{"Position", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		{"POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
+		//{"NORMAL", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
 	CHECK_HR(graphics.device->CreateInputLayout(inputLayoutDesc, (UINT)std::size(inputLayoutDesc), blob->GetBufferPointer(), blob->GetBufferSize(), &inputLayout));
 }
@@ -90,22 +91,16 @@ void Mesh::Draw(Graphics& graphics)
 void Mesh::AddRotation(const DirectX::XMVECTOR& rotationToAdd) noexcept
 {
 	rotation = DirectX::XMVectorAdd(rotation, rotationToAdd);
-	transformBuffer = { GetTransformMatrix() };
 }
 
 void Mesh::AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept
 {
 	position = DirectX::XMVectorAdd(position, posiationToAdd);
-	transformBuffer = { GetTransformMatrix() };
 }
 
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 {
-	return DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) *
-		DirectX::XMMatrixTranslationFromVector(position) *
-		DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
-	);
+	return DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
 }
 
 void Mesh::LoadModel(std::string fileName)
@@ -127,7 +122,13 @@ void Mesh::LoadModel(std::string fileName)
 	const unsigned int numVertices = scene->mMeshes[0]->mNumVertices;
 
 	vertices.reserve(numVertices);
-
+	
+	//assert(scene->mMeshes[0]->HasNormals());
+	//for (size_t i = 0; i < numVertices; i++)
+	//{
+	//	vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z,
+	//		scene->mMeshes[0]->mNormals[i].x, scene->mMeshes[0]->mNormals[i].y, scene->mMeshes[0]->mNormals[i].z));
+	//}
 	for (size_t i = 0; i < numVertices; i++)
 	{
 		vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z));
@@ -144,6 +145,9 @@ void Mesh::LoadModel(std::string fileName)
 
 void Mesh::UpdateTransformBuffer(Graphics& graphics)
 {
+	DirectX::XMMATRIX transformView = DirectX::XMMatrixTranspose(GetTransformMatrix() * graphics.GetCamera());
+	DirectX::XMMATRIX transformViewProjection = DirectX::XMMatrixTranspose(GetTransformMatrix() * graphics.GetCamera() * graphics.GetProjection());
+	transformBuffer = ConstantTransformBuffer(std::move(transformView), std::move(transformViewProjection));
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	CHECK_HR(graphics.context->Map(constantTransformBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
 	memcpy(mappedSubresource.pData, &transformBuffer, sizeof(transformBuffer));

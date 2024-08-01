@@ -3,6 +3,7 @@
 #include <dxgi.h>
 #include <d3d11.h>
 #include <wrl\client.h>
+#include "Camera.h"
 
 class Graphics
 {
@@ -16,6 +17,11 @@ public:
 	void BeginFrame() noexcept;
 	void EndFrame();
 
+	void SetProjection(DirectX::XMMATRIX proj) noexcept;
+	DirectX::XMMATRIX GetProjection() const noexcept;
+	void SetCamera(DirectX::XMMATRIX cam) noexcept;
+	DirectX::XMMATRIX GetCamera() const noexcept;
+
 private:
 	void DrawIndexed(const size_t numIndices);
 
@@ -25,4 +31,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> context;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> depthStencilView;
+
+	DirectX::XMMATRIX camera;
+	DirectX::XMMATRIX projection;
 };

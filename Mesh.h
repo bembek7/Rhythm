@@ -20,6 +20,11 @@ private:
 	void LoadModel(std::string fileName);
 	void UpdateTransformBuffer(Graphics& graphics);
 private:
+	/*struct Vertex {
+		Vertex(float x, float y, float z, float nx, float ny, float nz) : position(x, y, z), normal(nx, ny, nz) {}
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 normal;
+	};*/
 	struct Vertex {
 		Vertex(float x, float y, float z) : pos(x, y, z) {}
 		DirectX::XMFLOAT3 pos;
@@ -37,18 +42,15 @@ private:
 	DirectX::XMVECTOR position = { 0.f, 0.f, 3.f };
 	DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f };
 
-	struct ConstantBuffer
+	struct ConstantTransformBuffer
 	{
-		DirectX::XMMATRIX transform;
+		ConstantTransformBuffer() = default;
+		ConstantTransformBuffer(const DirectX::XMMATRIX& newTransformView, const DirectX::XMMATRIX& newTransformViewProjection) :
+			transformView(newTransformView),
+			transformViewProjection(newTransformViewProjection)
+			{}
+		DirectX::XMMATRIX transformView;
+		DirectX::XMMATRIX transformViewProjection;
 	};
-	ConstantBuffer transformBuffer =
-	{
-		{
-			DirectX::XMMatrixTranspose(
-				DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) *
-				DirectX::XMMatrixTranslationFromVector(position) *
-				DirectX::XMMatrixPerspectiveLH(1.0f,3.0f / 4.0f,0.5f,10.0f)
-			)
-		}
-	};
+	ConstantTransformBuffer transformBuffer;
 };

@@ -128,14 +128,14 @@ LRESULT Window::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	case WM_LBUTTONDOWN:
 		if (!keys[VK_LBUTTON])
 		{
-			keyPressedEvents.push(wParam);
+			keyPressedEvents.push((short)wParam);
 		}
 		keys[VK_LBUTTON] = true;
 		break;
 	case WM_KEYDOWN:
 		if (!keys[wParam])
 		{
-			keyPressedEvents.push(wParam);
+			keyPressedEvents.push((short)wParam);
 		}
 		keys[wParam] = true;
 		break;

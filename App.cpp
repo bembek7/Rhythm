@@ -21,6 +21,9 @@ int App::Run()
 	//gSoloud.play(gWave); // Play the wave
 
 	Mesh box = Mesh(graphics, "box.obj");
+	Camera camera;
+
+	graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.7f, 50.0f));
 
 	int mouseCounter = 0;
 
@@ -81,6 +84,7 @@ int App::Run()
 			box.AddRotation({ -0.1f,0.f,0.f });
 		}
 		
+		graphics.SetCamera(camera.GetMatrix());
 		graphics.BeginFrame();
 		box.Draw(graphics);
 		graphics.EndFrame();
