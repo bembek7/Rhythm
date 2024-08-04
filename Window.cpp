@@ -15,15 +15,25 @@ Window::Window()
 
 	RegisterClassEx(&windowClass);
 
+	RECT windowRect{};
+	windowRect.left = 100;
+	windowRect.right = windowWidth + windowRect.left;
+	windowRect.top = 100;
+	windowRect.bottom = windowHeight + windowRect.top;
+	if (AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE) == 0)
+	{
+		throw std::runtime_error("Can't establish window rect");
+	}
+
 	hWnd = CreateWindowEx(
 		0,
 		winClassName,
 		"Rythm",
 		WS_OVERLAPPEDWINDOW,
-		100,
-		100,
-		windowWidth,
-		windowHeight,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		windowRect.right - windowRect.left,
+		windowRect.bottom - windowRect.top,
 		nullptr,
 		nullptr,
 		GetModuleHandle(nullptr),
