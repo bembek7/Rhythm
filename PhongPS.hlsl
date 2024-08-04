@@ -37,12 +37,17 @@ struct LightVectorData
     float distanceToLight;
 };
 
+cbuffer CBuf : register(b1)
+{
+    float4 color;
+};
+
 float4 main(float3 viewPos : POSITION, float3 viewNormal : NORMAL) : SV_TARGET
 {
     const float3 diffuseColor = float3(1.0f, 1.0f, 1.0f);
     const float diffuseIntensity = 1.f;
-    const float specularIntensity = 0.8f;
-    const float specularPower = 0.2f;
+    const float specularIntensity = 0.1f;
+    const float specularPower = 0.1f;
     const float3 ambient = float3(0.05f, 0.05f, 0.05f);
     
     const float3 lightPos = float3(0.f, 0.f, 0.f);
@@ -60,5 +65,5 @@ float4 main(float3 viewPos : POSITION, float3 viewNormal : NORMAL) : SV_TARGET
 	
     const float3 specular = Speculate(diffuseColor, diffuseIntensity * specularIntensity, viewNormal, lightVector.vectorToLight, viewPos, attenuation, specularPower);
 	
-    return float4(saturate((diffuse + ambient) * float3(1.0f, 1.0f, 1.0f) + specular), 1.0f);
+    return float4(saturate((diffuse + ambient) * color.rgb + specular), color.a);
 }

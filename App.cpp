@@ -10,6 +10,7 @@ int App::Run()
 	Graphics graphics = Graphics(window.GetHWNDRef(), window.GetWindowWidth(), window.GetWindowHeight());
 
 	auto last = std::chrono::steady_clock::now();
+	auto start = std::chrono::steady_clock::now();
 
 	constexpr float beat = 1.0f;
 
@@ -20,7 +21,8 @@ int App::Run()
 
 	//gSoloud.play(gWave); // Play the wave
 
-	Mesh box = Mesh(graphics, "WusonOBJ.obj");
+	Mesh box = Mesh(graphics, "plane.obj", Phong, {0.f, 0.f, 7.f}, { 0.f, 0.f, 0.f }, { 10.f, 10.f, 1.f });
+	Mesh sphere = Mesh(graphics, "sphere.obj", Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	Camera camera;
 
 	graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.7f, 50.0f));
@@ -37,6 +39,9 @@ int App::Run()
 		const float deltaTime = std::chrono::duration<float>(std::chrono::steady_clock::now() - last).count();
 		last = std::chrono::steady_clock::now();
 
+		const float timeFromStart = std::chrono::duration<float>(std::chrono::steady_clock::now() - start).count();
+		const DirectX::XMFLOAT4 newColor = { (std::sin(timeFromStart) + 1.f) / 2, 0.0f, 0.0f, 1.0f };
+		sphere.SetColor(graphics, newColor);
 
 		while (!window.IsKeyQueueEmpty())
 		{
@@ -94,6 +99,7 @@ int App::Run()
 		
 		graphics.SetCamera(camera.GetMatrix());
 		graphics.BeginFrame();
+		sphere.Draw(graphics);
 		box.Draw(graphics);
 		graphics.EndFrame();
 	}

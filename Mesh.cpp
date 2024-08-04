@@ -10,14 +10,46 @@
 #include <cassert>
 #include <d3d11.h>
 
-Mesh::Mesh(Graphics& graphics, std::string fileName)
+Mesh::Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, DirectX::XMVECTOR scale) :
+	position(position),
+	rotation(rotation),
+	scale(scale)
 {
 	LoadModel(fileName);
 	assert(vertices.size() > 0 && indices.size() > 0);
 
+	std::wstring pixelShaderPath;
+	std::wstring vertexShaderPath;
+	
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
-	CHECK_HR(D3DReadFileToBlob(L"PhongPS.cso", &blob));
+
+	switch (shaderType)
+	{
+	case Solid:
+		pixelShaderPath = L"PixelShader.cso";
+		vertexShaderPath = L"VertexShader.cso";
+		break;
+	case Phong:
+		pixelShaderPath = L"PhongPS.cso";
+		vertexShaderPath = L"PhongVS.cso";
+		break;
+	}
+
+	D3D11_BUFFER_DESC colorBufferDesc{};
+	colorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	colorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	colorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	colorBufferDesc.MiscFlags = 0u;
+	colorBufferDesc.ByteWidth = sizeof(colorBuffer);
+	colorBufferDesc.StructureByteStride = 0u;
+	D3D11_SUBRESOURCE_DATA colorBufferData = {};
+	colorBufferData.pSysMem = &colorBuffer;
+
+	CHECK_HR(graphics.device->CreateBuffer(&colorBufferDesc, &colorBufferData, &constantColorBuffer));
+
+	CHECK_HR(D3DReadFileToBlob(pixelShaderPath.c_str(), &blob));
 	CHECK_HR(graphics.device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
+	
 
 	D3D11_BUFFER_DESC indexBufferDesc = {};
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -57,7 +89,7 @@ Mesh::Mesh(Graphics& graphics, std::string fileName)
 	constanBufferData.pSysMem = &transformBuffer;
 	CHECK_HR(graphics.device->CreateBuffer(&constantBufferDesc, &constanBufferData, &constantTransformBuffer));
 
-	CHECK_HR(D3DReadFileToBlob(L"PhongVS.cso", &blob));
+	CHECK_HR(D3DReadFileToBlob(vertexShaderPath.c_str(), &blob));
 	CHECK_HR(graphics.device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));
 
 	D3D11_INPUT_ELEMENT_DESC inputLayoutDesc[] =
@@ -71,6 +103,7 @@ Mesh::Mesh(Graphics& graphics, std::string fileName)
 void Mesh::Draw(Graphics& graphics)
 {
 	graphics.context->PSSetShader(pixelShader.Get(), nullptr, 0u);
+	graphics.context->PSSetConstantBuffers(1u, 1u, constantColorBuffer.GetAddressOf());
 
 	graphics.context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
 
@@ -103,6 +136,15 @@ void Mesh::Scale(float scaleFactor) noexcept
 	scale = DirectX::XMVectorScale(scale, scaleFactor);
 }
 
+void Mesh::SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor)
+{
+	colorBuffer = newColor;
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	CHECK_HR(graphics.context->Map(constantColorBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
+	memcpy(mappedSubresource.pData, &colorBuffer, sizeof(colorBuffer));
+	graphics.context->Unmap(constantColorBuffer.Get(), 0u);
+}
+
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 {
 	return DirectX::XMMatrixScalingFromVector(scale) * DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
@@ -116,7 +158,9 @@ void Mesh::LoadModel(std::string fileName)
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
+		aiProcess_SortByPType |
+		aiProcess_GenNormals 
+	);
 
 	// If the import failed, report it
 	if (!scene)
