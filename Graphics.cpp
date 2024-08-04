@@ -79,7 +79,7 @@ Graphics::Graphics(HWND& hWnd, unsigned int windowWidth, unsigned int windowHeig
 
 	context->OMSetRenderTargets(1u, renderTargetView.GetAddressOf(), depthStencilView.Get());
 
-	D3D11_VIEWPORT viewport = {};
+	D3D11_VIEWPORT viewport{};
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.Width = (FLOAT)windowWidth;

@@ -39,13 +39,21 @@ Mesh::Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, Dire
 	colorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	colorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	colorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	colorBufferDesc.MiscFlags = 0u;
 	colorBufferDesc.ByteWidth = sizeof(colorBuffer);
-	colorBufferDesc.StructureByteStride = 0u;
 	D3D11_SUBRESOURCE_DATA colorBufferData = {};
 	colorBufferData.pSysMem = &colorBuffer;
 
 	CHECK_HR(graphics.device->CreateBuffer(&colorBufferDesc, &colorBufferData, &constantColorBuffer));
+
+	D3D11_BUFFER_DESC lightBufferDesc{};
+	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.ByteWidth = sizeof(lightBuffer);
+	D3D11_SUBRESOURCE_DATA lightBufferData = {};
+	lightBufferData.pSysMem = &lightBuffer;
+
+	CHECK_HR(graphics.device->CreateBuffer(&lightBufferDesc, &lightBufferData, &constantLightBuffer));
 
 	CHECK_HR(D3DReadFileToBlob(pixelShaderPath.c_str(), &blob));
 	CHECK_HR(graphics.device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
@@ -103,7 +111,8 @@ Mesh::Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, Dire
 void Mesh::Draw(Graphics& graphics)
 {
 	graphics.context->PSSetShader(pixelShader.Get(), nullptr, 0u);
-	graphics.context->PSSetConstantBuffers(1u, 1u, constantColorBuffer.GetAddressOf());
+	graphics.context->PSSetConstantBuffers(0u, 1u, constantColorBuffer.GetAddressOf());
+	graphics.context->PSSetConstantBuffers(1u, 1u, constantLightBuffer.GetAddressOf());
 
 	graphics.context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
 
@@ -143,6 +152,15 @@ void Mesh::SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor)
 	CHECK_HR(graphics.context->Map(constantColorBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
 	memcpy(mappedSubresource.pData, &colorBuffer, sizeof(colorBuffer));
 	graphics.context->Unmap(constantColorBuffer.Get(), 0u);
+}
+
+void Mesh::SetDiffuseColor(Graphics& graphics, const DirectX::XMFLOAT3& newColor)
+{
+	lightBuffer.diffuseColor = newColor;
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	CHECK_HR(graphics.context->Map(constantLightBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
+	memcpy(mappedSubresource.pData, &lightBuffer, sizeof(lightBuffer));
+	graphics.context->Unmap(constantLightBuffer.Get(), 0u);
 }
 
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept

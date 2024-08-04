@@ -25,7 +25,8 @@ int App::Run()
 	Mesh sphere = Mesh(graphics, "sphere.obj", Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	Camera camera;
 
-	graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.7f, 50.0f));
+	float screenRatio = static_cast<float>(window.GetWindowHeight()) / window.GetWindowWidth();
+	graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, screenRatio, 0.7f, 50.0f));
 
 	int mouseCounter = 0;
 
@@ -42,6 +43,7 @@ int App::Run()
 		const float timeFromStart = std::chrono::duration<float>(std::chrono::steady_clock::now() - start).count();
 		const DirectX::XMFLOAT4 newColor = { (std::sin(timeFromStart) + 1.f) / 2, 0.0f, 0.0f, 1.0f };
 		sphere.SetColor(graphics, newColor);
+		box.SetDiffuseColor(graphics, DirectX::XMFLOAT3{ newColor.x, newColor.y, newColor.z });
 
 		while (!window.IsKeyQueueEmpty())
 		{
