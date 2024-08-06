@@ -8,6 +8,7 @@
 class Graphics
 {
 	friend class Mesh;
+	friend class PointLight;
 public:
 	Graphics(HWND& hWnd, unsigned int windowWidth, unsigned int windowHeight);
 	~Graphics() = default;

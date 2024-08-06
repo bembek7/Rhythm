@@ -96,7 +96,6 @@ short Window::PopPressedKey() noexcept
 	const short pressedKey = keyPressedEvents.front();
 	keyPressedEvents.pop();
 	return pressedKey;
-
 }
 
 bool Window::IsKeyPressed(short key) const noexcept
