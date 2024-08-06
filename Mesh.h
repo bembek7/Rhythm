@@ -22,7 +22,6 @@ public:
 	void AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept;
 	void Scale(float scaleFactor) noexcept;
 	void SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor);
-	void SetDiffuseColor(Graphics& graphics, const DirectX::XMFLOAT3& newColor);
 
 private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
@@ -42,7 +41,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantTransformBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantColorBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> constantLightBuffer;
+
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 
@@ -56,7 +55,7 @@ private:
 		ConstantTransformBuffer(const DirectX::XMMATRIX& newTransformView, const DirectX::XMMATRIX& newTransformViewProjection) :
 			transformView(newTransformView),
 			transformViewProjection(newTransformViewProjection)
-			{}
+		{}
 		DirectX::XMMATRIX transformView;
 		DirectX::XMMATRIX transformViewProjection;
 	};
@@ -71,16 +70,4 @@ private:
 		DirectX::XMFLOAT4 color;
 	};
 	ConstantColorBuffer colorBuffer = { { 1.0f, 1.0f, 1.0f, 1.0f } };
-
-	struct ConstantLightBuffer
-	{
-		DirectX::XMFLOAT3 diffuseColor = { 1.0f, 1.0f, 1.0f };
-		float diffuseIntensity = 0.4f;
-		DirectX::XMFLOAT3 ambient = { 0.3f, 0.3f, 0.3f };
-		float specularIntensity = 0.7f;
-		DirectX::XMFLOAT3 lightPosition = { 0.f, 0.f, 6.f };
-		float specularPower = 0.8f;
-		
-	};
-	ConstantLightBuffer lightBuffer;
 };

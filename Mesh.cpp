@@ -20,7 +20,7 @@ Mesh::Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, Dire
 
 	std::wstring pixelShaderPath;
 	std::wstring vertexShaderPath;
-	
+
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 
 	switch (shaderType)
@@ -45,19 +45,8 @@ Mesh::Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, Dire
 
 	CHECK_HR(graphics.device->CreateBuffer(&colorBufferDesc, &colorBufferData, &constantColorBuffer));
 
-	D3D11_BUFFER_DESC lightBufferDesc{};
-	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightBufferDesc.ByteWidth = sizeof(lightBuffer);
-	D3D11_SUBRESOURCE_DATA lightBufferData = {};
-	lightBufferData.pSysMem = &lightBuffer;
-
-	CHECK_HR(graphics.device->CreateBuffer(&lightBufferDesc, &lightBufferData, &constantLightBuffer));
-
 	CHECK_HR(D3DReadFileToBlob(pixelShaderPath.c_str(), &blob));
 	CHECK_HR(graphics.device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
-	
 
 	D3D11_BUFFER_DESC indexBufferDesc = {};
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -112,7 +101,6 @@ void Mesh::Draw(Graphics& graphics)
 {
 	graphics.context->PSSetShader(pixelShader.Get(), nullptr, 0u);
 	graphics.context->PSSetConstantBuffers(0u, 1u, constantColorBuffer.GetAddressOf());
-	graphics.context->PSSetConstantBuffers(1u, 1u, constantLightBuffer.GetAddressOf());
 
 	graphics.context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
 
@@ -154,15 +142,6 @@ void Mesh::SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor)
 	graphics.context->Unmap(constantColorBuffer.Get(), 0u);
 }
 
-void Mesh::SetDiffuseColor(Graphics& graphics, const DirectX::XMFLOAT3& newColor)
-{
-	lightBuffer.diffuseColor = newColor;
-	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-	CHECK_HR(graphics.context->Map(constantLightBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
-	memcpy(mappedSubresource.pData, &lightBuffer, sizeof(lightBuffer));
-	graphics.context->Unmap(constantLightBuffer.Get(), 0u);
-}
-
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 {
 	return DirectX::XMMatrixScalingFromVector(scale) * DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
@@ -177,10 +156,9 @@ void Mesh::LoadModel(std::string fileName)
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType |
-		aiProcess_GenNormals 
+		aiProcess_GenNormals
 	);
 
-	// If the import failed, report it
 	if (!scene)
 	{
 		throw std::runtime_error(importer.GetErrorString());
@@ -189,12 +167,12 @@ void Mesh::LoadModel(std::string fileName)
 	const unsigned int numVertices = scene->mMeshes[0]->mNumVertices;
 
 	vertices.reserve(numVertices);
-	
+
 	assert(scene->mMeshes[0]->HasNormals());
 	for (size_t i = 0; i < numVertices; i++)
 	{
 		vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z,
-		scene->mMeshes[0]->mNormals[i].x, scene->mMeshes[0]->mNormals[i].y, scene->mMeshes[0]->mNormals[i].z));
+			scene->mMeshes[0]->mNormals[i].x, scene->mMeshes[0]->mNormals[i].y, scene->mMeshes[0]->mNormals[i].z));
 	}
 
 	for (size_t i = 0; i < scene->mMeshes[0]->mNumFaces; i++)

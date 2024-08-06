@@ -155,6 +155,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\dr_impl.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\soloud_wav.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\soloud_wavstream.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SoLoud\audiosource\wav\dr_flac.h" />
     <ClInclude Include="SoLoud\audiosource\wav\dr_mp3.h" />
