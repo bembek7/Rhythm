@@ -4,6 +4,7 @@
 #include <vector>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include "ConstantBuffer.h"
 
 enum ShaderType
 {
@@ -29,7 +30,7 @@ private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
 	void LoadModel(const std::string fileName);
 	void UpdateTransformBuffer(Graphics& graphics);
-	void UpdateColorBuffer(Graphics& graphics);
+
 private:
 	struct Vertex {
 		Vertex(const float x, const float y, const float z, const float nx, const float ny, const float nz) : position(x, y, z), normal(nx, ny, nz) {}
@@ -43,7 +44,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantTransformBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> constantColorBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
@@ -64,13 +64,15 @@ private:
 	};
 	ConstantTransformBuffer transformBuffer;
 
-	struct ConstantColorBuffer
+	struct ColorBuffer
 	{
-		ConstantColorBuffer() = default;
-		ConstantColorBuffer(const DirectX::XMFLOAT4 newColor) :
+		ColorBuffer() = default;
+		ColorBuffer(const DirectX::XMFLOAT4 newColor) :
 			color(newColor)
 		{}
 		DirectX::XMFLOAT4 color;
 	};
-	ConstantColorBuffer colorBuffer = { { 1.0f, 1.0f, 1.0f, 1.0f } };
+	ColorBuffer colorBuffer = { { 1.0f, 1.0f, 1.0f, 1.0f } };
+	
+	std::unique_ptr<ConstantBuffer<ColorBuffer>> constantColorBuffer;
 };

@@ -35,15 +35,7 @@ Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shad
 		break;
 	}
 
-	D3D11_BUFFER_DESC colorBufferDesc{};
-	colorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	colorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	colorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	colorBufferDesc.ByteWidth = sizeof(colorBuffer);
-	D3D11_SUBRESOURCE_DATA colorBufferData = {};
-	colorBufferData.pSysMem = &colorBuffer;
-
-	CHECK_HR(graphics.device->CreateBuffer(&colorBufferDesc, &colorBufferData, &constantColorBuffer));
+	constantColorBuffer = std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, colorBuffer);
 
 	CHECK_HR(D3DReadFileToBlob(pixelShaderPath.c_str(), &blob));
 	CHECK_HR(graphics.device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
@@ -100,7 +92,7 @@ Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shad
 void Mesh::Draw(Graphics& graphics)
 {
 	graphics.context->PSSetShader(pixelShader.Get(), nullptr, 0u);
-	graphics.context->PSSetConstantBuffers(0u, 1u, constantColorBuffer.GetAddressOf());
+	constantColorBuffer->Bind(graphics);
 
 	graphics.context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
 
@@ -136,7 +128,7 @@ void Mesh::Scale(const float scaleFactor) noexcept
 void Mesh::SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor)
 {
 	colorBuffer = newColor;
-	UpdateColorBuffer(graphics);
+	constantColorBuffer->Update(graphics, colorBuffer);
 }
 
 DirectX::XMFLOAT3 Mesh::GetColor() const noexcept
@@ -202,12 +194,4 @@ void Mesh::UpdateTransformBuffer(Graphics& graphics)
 	CHECK_HR(graphics.context->Map(constantTransformBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
 	memcpy(mappedSubresource.pData, &transformBuffer, sizeof(transformBuffer));
 	graphics.context->Unmap(constantTransformBuffer.Get(), 0u);
-}
-
-void Mesh::UpdateColorBuffer(Graphics& graphics)
-{
-	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-	CHECK_HR(graphics.context->Map(constantColorBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
-	memcpy(mappedSubresource.pData, &colorBuffer, sizeof(colorBuffer));
-	graphics.context->Unmap(constantColorBuffer.Get(), 0u);
 }

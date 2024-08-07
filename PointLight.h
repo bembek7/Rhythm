@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Graphics.h"
+#include "ConstantBuffer.h"
 
 class PointLight
 {
@@ -10,12 +11,7 @@ public:
 	void Bind(Graphics& graphics);
 
 private:
-	void UpdateBuffer(Graphics& graphics);
-
-private:
-	Microsoft::WRL::ComPtr<ID3D11Buffer> constantLightBuffer;
-
-	struct ConstantLightBuffer
+	struct LightBuffer
 	{
 		DirectX::XMFLOAT3 diffuseColor = { 1.0f, 1.0f, 1.0f };
 		float diffuseIntensity = 0.6f;
@@ -24,4 +20,6 @@ private:
 		DirectX::XMFLOAT3 lightPosition = { 0.f, 0.f, 0.f };
 		float specularPower = 0.8f;
 	} lightBuffer;
+
+	std::unique_ptr<ConstantBuffer<LightBuffer>> constantLightBuffer;
 };
