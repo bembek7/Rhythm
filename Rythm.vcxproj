@@ -179,6 +179,7 @@
     <ClCompile Include="SoLoud\core\soloud_filter.cpp" />
     <ClCompile Include="SoLoud\core\soloud_queue.cpp" />
     <ClCompile Include="SoLoud\core\soloud_thread.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
@@ -226,6 +227,7 @@
     <ClInclude Include="SoLoud\include\soloud_wav.h" />
     <ClInclude Include="SoLoud\include\soloud_waveshaperfilter.h" />
     <ClInclude Include="SoLoud\include\soloud_wavstream.h" />
+    <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="ThrowMacros.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
