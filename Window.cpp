@@ -65,7 +65,7 @@ std::optional<int> Window::ProcessMessages()
 	return {};
 }
 
-HWND& Window::GetHWNDRef() noexcept
+const HWND& Window::GetHWNDRef() noexcept
 {
 	return hWnd;
 }
@@ -80,7 +80,7 @@ unsigned int Window::GetWindowHeight() const noexcept
 	return windowHeight;
 }
 
-void Window::SetWidnowTitle(std::string newTitle) noexcept
+void Window::SetWidnowTitle(const std::string newTitle) noexcept
 {
 	SetWindowText(hWnd, newTitle.c_str());
 }
@@ -98,7 +98,7 @@ short Window::PopPressedKey() noexcept
 	return pressedKey;
 }
 
-bool Window::IsKeyPressed(short key) const noexcept
+bool Window::IsKeyPressed(const short key) const noexcept
 {
 	return keys[key];
 }
@@ -127,7 +127,7 @@ LRESULT Window::WindowProcAfterCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	return window->HandleMessage(hWnd, uMsg, wParam, lParam);
 }
 
-LRESULT Window::HandleMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::HandleMessage(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam)
 {
 	switch (uMsg)
 	{

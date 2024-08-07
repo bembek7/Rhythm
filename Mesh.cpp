@@ -10,7 +10,7 @@
 #include <cassert>
 #include <d3d11.h>
 
-Mesh::Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, DirectX::XMVECTOR position, DirectX::XMVECTOR rotation, DirectX::XMVECTOR scale) :
+Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& rotation, const DirectX::XMVECTOR& scale):
 	position(position),
 	rotation(rotation),
 	scale(scale)
@@ -128,7 +128,7 @@ void Mesh::AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept
 	position = DirectX::XMVectorAdd(position, posiationToAdd);
 }
 
-void Mesh::Scale(float scaleFactor) noexcept
+void Mesh::Scale(const float scaleFactor) noexcept
 {
 	scale = DirectX::XMVectorScale(scale, scaleFactor);
 }
@@ -136,10 +136,19 @@ void Mesh::Scale(float scaleFactor) noexcept
 void Mesh::SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor)
 {
 	colorBuffer = newColor;
-	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-	CHECK_HR(graphics.context->Map(constantColorBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
-	memcpy(mappedSubresource.pData, &colorBuffer, sizeof(colorBuffer));
-	graphics.context->Unmap(constantColorBuffer.Get(), 0u);
+	UpdateColorBuffer(graphics);
+}
+
+DirectX::XMFLOAT3 Mesh::GetColor() const noexcept
+{
+	return DirectX::XMFLOAT3(colorBuffer.color.x, colorBuffer.color.y, colorBuffer.color.z);
+}
+
+DirectX::XMFLOAT3 Mesh::GetPosition() const noexcept
+{
+	DirectX::XMFLOAT3 retPosition;
+	DirectX::XMStoreFloat3(&retPosition, position);
+	return retPosition;
 }
 
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
@@ -147,7 +156,7 @@ DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 	return DirectX::XMMatrixScalingFromVector(scale) * DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
 }
 
-void Mesh::LoadModel(std::string fileName)
+void Mesh::LoadModel(const std::string fileName)
 {
 	Assimp::Importer importer;
 
@@ -193,4 +202,12 @@ void Mesh::UpdateTransformBuffer(Graphics& graphics)
 	CHECK_HR(graphics.context->Map(constantTransformBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
 	memcpy(mappedSubresource.pData, &transformBuffer, sizeof(transformBuffer));
 	graphics.context->Unmap(constantTransformBuffer.Get(), 0u);
+}
+
+void Mesh::UpdateColorBuffer(Graphics& graphics)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	CHECK_HR(graphics.context->Map(constantColorBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
+	memcpy(mappedSubresource.pData, &colorBuffer, sizeof(colorBuffer));
+	graphics.context->Unmap(constantColorBuffer.Get(), 0u);
 }

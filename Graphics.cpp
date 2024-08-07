@@ -3,7 +3,7 @@
 #include <d3d11.h>
 #include <d3dcommon.h>
 
-Graphics::Graphics(HWND& hWnd, unsigned int windowWidth, unsigned int windowHeight)
+Graphics::Graphics(const HWND& hWnd, const unsigned int windowWidth, const unsigned int windowHeight)
 {
 	DXGI_SWAP_CHAIN_DESC scd = {};
 	scd.BufferDesc.Width = 0;
@@ -90,6 +90,9 @@ Graphics::Graphics(HWND& hWnd, unsigned int windowWidth, unsigned int windowHeig
 	context->RSSetViewports(1u, &viewport);
 
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	const float screenRatio = viewport.Height / viewport.Width;
+	SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, screenRatio, 0.7f, 50.0f));
 }
 
 void Graphics::DrawIndexed(const size_t numIndices)
@@ -109,7 +112,7 @@ void Graphics::EndFrame()
 	CHECK_HR(swapChain->Present(1u, 0u));
 }
 
-void Graphics::SetProjection(DirectX::XMMATRIX proj) noexcept
+void Graphics::SetProjection(const DirectX::XMMATRIX& proj) noexcept
 {
 	projection = proj;
 }
@@ -119,7 +122,7 @@ DirectX::XMMATRIX Graphics::GetProjection() const noexcept
 	return projection;
 }
 
-void Graphics::SetCamera(DirectX::XMMATRIX cam) noexcept
+void Graphics::SetCamera(const DirectX::XMMATRIX& cam) noexcept
 {
 	camera = cam;
 }

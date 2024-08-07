@@ -10,7 +10,7 @@ class Graphics
 	friend class Mesh;
 	friend class PointLight;
 public:
-	Graphics(HWND& hWnd, unsigned int windowWidth, unsigned int windowHeight);
+	Graphics(const HWND& hWnd, const unsigned int windowWidth, const unsigned int windowHeight);
 	~Graphics() = default;
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
@@ -18,9 +18,9 @@ public:
 	void BeginFrame() noexcept;
 	void EndFrame();
 
-	void SetProjection(DirectX::XMMATRIX proj) noexcept;
+	void SetProjection(const DirectX::XMMATRIX& proj) noexcept;
 	DirectX::XMMATRIX GetProjection() const noexcept;
-	void SetCamera(DirectX::XMMATRIX cam) noexcept;
+	void SetCamera(const DirectX::XMMATRIX& cam) noexcept;
 	DirectX::XMMATRIX GetCamera() const noexcept;
 
 private:

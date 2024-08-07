@@ -7,13 +7,13 @@ DirectX::XMMATRIX Camera::GetMatrix() const noexcept
 	return DirectX::XMMatrixLookAtLH(position, DirectX::XMVectorAdd(position, forwardVector), upVector);
 }
 
-void Camera::Move(DirectX::XMVECTOR moveVector) noexcept
+void Camera::Move(const DirectX::XMVECTOR& moveVector) noexcept
 {
 	const DirectX::XMVECTOR moveVectorRotated = DirectX::XMVector3Rotate(moveVector, DirectX::XMQuaternionRotationRollPitchYawFromVector(rotation));
 	position = DirectX::XMVectorAdd(position, moveVectorRotated);
 }
 
-void Camera::Rotate(DirectX::XMVECTOR rotateVector) noexcept
+void Camera::Rotate(const DirectX::XMVECTOR& rotateVector) noexcept
 {
 	rotation = DirectX::XMVectorAdd(rotation, rotateVector);
 }

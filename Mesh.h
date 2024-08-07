@@ -14,22 +14,25 @@ enum ShaderType
 class Mesh
 {
 public:
-	Mesh(Graphics& graphics, std::string fileName, ShaderType shaderType, DirectX::XMVECTOR position = { 0.f, 0.f, 5.f }, DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f }, DirectX::XMVECTOR scale = { 1.f, 1.f, 1.f });
+	Mesh(Graphics& graphics,const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position = { 0.f, 0.f, 5.f }, const DirectX::XMVECTOR& rotation = { 0.f, 0.f, 0.f }, const DirectX::XMVECTOR& scale = { 1.f, 1.f, 1.f });
 
 	void Draw(Graphics& graphics);
 
 	void AddRotation(const DirectX::XMVECTOR& rotationToAdd) noexcept;
 	void AddPosition(const DirectX::XMVECTOR& posiationToAdd) noexcept;
-	void Scale(float scaleFactor) noexcept;
+	void Scale(const float scaleFactor) noexcept;
 	void SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor);
+	DirectX::XMFLOAT3 GetColor() const noexcept;
+	DirectX::XMFLOAT3 GetPosition() const noexcept;
 
 private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
-	void LoadModel(std::string fileName);
+	void LoadModel(const std::string fileName);
 	void UpdateTransformBuffer(Graphics& graphics);
+	void UpdateColorBuffer(Graphics& graphics);
 private:
 	struct Vertex {
-		Vertex(float x, float y, float z, float nx, float ny, float nz) : position(x, y, z), normal(nx, ny, nz) {}
+		Vertex(const float x, const float y, const float z, const float nx, const float ny, const float nz) : position(x, y, z), normal(nx, ny, nz) {}
 		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 normal;
 	};
