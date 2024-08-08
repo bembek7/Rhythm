@@ -25,6 +25,9 @@ Window::Window()
 		throw std::runtime_error("Can't establish window rect");
 	}
 
+	const unsigned int clientAreaWidth = windowRect.right - windowRect.left;
+	const unsigned int clientAreaHeight = windowRect.bottom - windowRect.top;
+
 	hWnd = CreateWindowEx(
 		0,
 		winClassName,
@@ -32,8 +35,8 @@ Window::Window()
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		windowRect.right - windowRect.left,
-		windowRect.bottom - windowRect.top,
+		clientAreaWidth,
+		clientAreaHeight,
 		nullptr,
 		nullptr,
 		GetModuleHandle(nullptr),
@@ -45,6 +48,7 @@ Window::Window()
 		throw std::runtime_error(std::system_category().message(GetLastError()));
 	}
 
+	graphics = std::make_unique<Graphics>(hWnd, clientAreaWidth, clientAreaHeight);
 	ShowWindow(hWnd, SW_SHOW);
 }
 
@@ -63,21 +67,6 @@ std::optional<int> Window::ProcessMessages()
 	}
 
 	return {};
-}
-
-const HWND& Window::GetHWNDRef() noexcept
-{
-	return hWnd;
-}
-
-unsigned int Window::GetWindowWidth() const noexcept
-{
-	return windowWidth;
-}
-
-unsigned int Window::GetWindowHeight() const noexcept
-{
-	return windowHeight;
 }
 
 void Window::SetWidnowTitle(const std::string newTitle) noexcept
@@ -101,6 +90,11 @@ short Window::PopPressedKey() noexcept
 bool Window::IsKeyPressed(const short key) const noexcept
 {
 	return keys[key];
+}
+
+Graphics& Window::GetGraphics() noexcept
+{
+	return *graphics;
 }
 
 LRESULT Window::WindowProcBeforeCreation(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

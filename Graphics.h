@@ -3,11 +3,10 @@
 #include <dxgi.h>
 #include <d3d11.h>
 #include <wrl\client.h>
-#include "Camera.h"
+#include <DirectXMath.h>
 
 class Graphics
 {
-	friend class Mesh;
 	friend class Bindable;
 public:
 	Graphics(const HWND& hWnd, const unsigned int windowWidth, const unsigned int windowHeight);
@@ -23,8 +22,7 @@ public:
 	void SetCamera(const DirectX::XMMATRIX& cam) noexcept;
 	DirectX::XMMATRIX GetCamera() const noexcept;
 
-private:
-	void DrawIndexed(const size_t numIndices);
+	void DrawIndexed(const size_t numIndices) noexcept;
 
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;

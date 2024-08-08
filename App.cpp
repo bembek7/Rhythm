@@ -1,15 +1,13 @@
 #include "App.h"
-#include "Graphics.h"
 #include <chrono>
 #include "Mesh.h"
 #include "PointLight.h"
 #include <numbers>
 #include "SoundPlayer.h"
+#include "Camera.h"
 
 int App::Run()
 {
-	Graphics graphics = Graphics(window.GetHWNDRef(), window.GetWindowWidth(), window.GetWindowHeight());
-
 	struct Song
 	{
 		std::string fileName;
@@ -25,12 +23,12 @@ int App::Run()
 
 	soundPlayer.LoadSong(mainSong.fileName);
 
-	Mesh plane = Mesh(graphics, "plane.obj", Phong, { 0.f, 0.f, 7.f }, { 0.f, 0.f, 0.f }, { 10.f, 10.f, 1.f });
-	Mesh sphere = Mesh(graphics, "sphere.obj", Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
-	PointLight planeLight = PointLight(graphics, sphere.GetPosition());
-	PointLight sphereLight = PointLight(graphics, { 0.f, 0.f, 0.f });
+	Mesh plane = Mesh(window.GetGraphics(), "plane.obj", Phong, {0.f, 0.f, 7.f}, {0.f, 0.f, 0.f}, {10.f, 10.f, 1.f});
+	Mesh sphere = Mesh(window.GetGraphics(), "sphere.obj", Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
+	PointLight planeLight = PointLight(window.GetGraphics(), sphere.GetPosition());
+	PointLight sphereLight = PointLight(window.GetGraphics(), { 0.f, 0.f, 0.f });
 	Camera camera;
-	graphics.SetCamera(camera.GetMatrix()); // Should be set every frame if doing camera movement
+	window.GetGraphics().SetCamera(camera.GetMatrix()); // Should be set every frame if doing camera movement
 
 	auto start = std::chrono::steady_clock::now();
 	soundPlayer.Play(true);
@@ -46,8 +44,8 @@ int App::Run()
 		float blueFactor = float(std::cos(timeFromStart * 2 * std::numbers::pi / timeStep) + 1.f) / 2;
 		blueFactor = blueFactor * blueFactor;
 		const DirectX::XMFLOAT4 newColor = { 0.0f, blueFactor / 1.5f, blueFactor, 1.0f };
-		sphere.SetColor(graphics, newColor);
-		planeLight.SetDiffuseColor(graphics, sphere.GetColor());
+		sphere.SetColor(window.GetGraphics(), newColor);
+		planeLight.SetDiffuseColor(window.GetGraphics(), sphere.GetColor());
 
 		while (!window.IsKeyQueueEmpty())
 		{
@@ -99,12 +97,12 @@ int App::Run()
 			plane.Scale(1.1f);
 		}*/
 
-		graphics.BeginFrame();
-		sphereLight.Bind(graphics);
-		sphere.Draw(graphics);
-		planeLight.Bind(graphics);
-		plane.Draw(graphics);
-		graphics.EndFrame();
+		window.GetGraphics().BeginFrame();
+		sphereLight.Bind(window.GetGraphics());
+		sphere.Draw(window.GetGraphics());
+		planeLight.Bind(window.GetGraphics());
+		plane.Draw(window.GetGraphics());
+		window.GetGraphics().EndFrame();
 	}
 
 	return 0;

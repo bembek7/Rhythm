@@ -95,7 +95,7 @@ Graphics::Graphics(const HWND& hWnd, const unsigned int windowWidth, const unsig
 	SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, screenRatio, 0.7f, 50.0f));
 }
 
-void Graphics::DrawIndexed(const size_t numIndices)
+void Graphics::DrawIndexed(const size_t numIndices) noexcept
 {
 	context->DrawIndexed((UINT)numIndices, 0u, 0);
 }
