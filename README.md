@@ -1,4 +1,4 @@
-# Rythm
+# Rhythm
 
 ## Overview
 
