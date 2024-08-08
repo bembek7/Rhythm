@@ -3,7 +3,6 @@
 #include "SoLoud/include/soloud_wav.h"
 #include <string>
 
-
 class SoundPlayer
 {
 public:
@@ -18,4 +17,3 @@ private:
 	SoLoud::Soloud engine;
 	SoLoud::Wav mainSong;
 };
-

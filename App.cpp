@@ -122,7 +122,7 @@ void App::EvaluateHit(const float timeFromStart, const float timeStep) noexcept
 	{
 		PerfectHit();
 	}
-	else if(missTime < 0.15f)
+	else if (missTime < 0.15f)
 	{
 		GoodHit();
 	}

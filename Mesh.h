@@ -2,9 +2,14 @@
 #include "Graphics.h"
 #include <string>
 #include <vector>
-#include <d3d11.h>
 #include <DirectXMath.h>
 #include "ConstantBuffer.h"
+#include <memory>
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "InputLayout.h"
+#include "PixelShader.h"
+#include "VertexShader.h"
 
 enum ShaderType
 {
@@ -15,7 +20,7 @@ enum ShaderType
 class Mesh
 {
 public:
-	Mesh(Graphics& graphics,const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position = { 0.f, 0.f, 5.f }, const DirectX::XMVECTOR& rotation = { 0.f, 0.f, 0.f }, const DirectX::XMVECTOR& scale = { 1.f, 1.f, 1.f });
+	Mesh(Graphics& graphics, const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position = { 0.f, 0.f, 5.f }, const DirectX::XMVECTOR& rotation = { 0.f, 0.f, 0.f }, const DirectX::XMVECTOR& scale = { 1.f, 1.f, 1.f });
 
 	void Draw(Graphics& graphics);
 
@@ -40,29 +45,24 @@ private:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> constantTransformBuffer;
+	std::unique_ptr<PixelShader> pixelShader;
+	std::unique_ptr<IndexBuffer> indexBuffer;
+	std::unique_ptr<VertexBuffer<Vertex>> vertexBuffer;
+	std::unique_ptr<InputLayout> inputLayout;
+	std::unique_ptr<VertexShader> vertexShader;
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
-
-	DirectX::XMVECTOR position = { 0.f, 0.f, 5.f };
-	DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f };
-	DirectX::XMVECTOR scale = { 1.f, 1.f, 1.f };
-
-	struct ConstantTransformBuffer
+	struct TransformBuffer
 	{
-		ConstantTransformBuffer() = default;
-		ConstantTransformBuffer(const DirectX::XMMATRIX& newTransformView, const DirectX::XMMATRIX& newTransformViewProjection) :
+		TransformBuffer() = default;
+		TransformBuffer(const DirectX::XMMATRIX& newTransformView, const DirectX::XMMATRIX& newTransformViewProjection) :
 			transformView(newTransformView),
 			transformViewProjection(newTransformViewProjection)
 		{}
 		DirectX::XMMATRIX transformView;
 		DirectX::XMMATRIX transformViewProjection;
 	};
-	ConstantTransformBuffer transformBuffer;
+	TransformBuffer transformBuffer;
+	std::unique_ptr<ConstantBuffer<TransformBuffer>> constantTransformBuffer;
 
 	struct ColorBuffer
 	{
@@ -73,6 +73,9 @@ private:
 		DirectX::XMFLOAT4 color;
 	};
 	ColorBuffer colorBuffer = { { 1.0f, 1.0f, 1.0f, 1.0f } };
-	
 	std::unique_ptr<ConstantBuffer<ColorBuffer>> constantColorBuffer;
+
+	DirectX::XMVECTOR position = { 0.f, 0.f, 5.f };
+	DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f };
+	DirectX::XMVECTOR scale = { 1.f, 1.f, 1.f };
 };

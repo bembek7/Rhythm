@@ -8,7 +8,6 @@
 class Graphics
 {
 	friend class Mesh;
-	friend class PointLight;
 	friend class Bindable;
 public:
 	Graphics(const HWND& hWnd, const unsigned int windowWidth, const unsigned int windowHeight);

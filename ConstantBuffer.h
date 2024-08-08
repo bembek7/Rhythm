@@ -2,11 +2,18 @@
 #include "ThrowMacros.h"
 #include "Bindable.h"
 
+enum BufferType
+{
+	Pixel,
+	Vertex
+};
+
 template<typename Structure>
 class ConstantBuffer : public Bindable
 {
 public:
-	ConstantBuffer(Graphics& graphics, const Structure& data, UINT slot = 0u):
+	ConstantBuffer(Graphics& graphics, const Structure& data, const BufferType bufferType, const UINT slot = 0u) :
+		bufferType(bufferType),
 		slot(slot)
 	{
 		D3D11_BUFFER_DESC bufferDesc{};
@@ -28,9 +35,18 @@ public:
 	}
 	void Bind(Graphics& graphics) noexcept
 	{
-		GetContext(graphics)->PSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
+		switch (bufferType)
+		{
+		case Pixel:
+			GetContext(graphics)->PSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
+			break;
+		case Vertex:
+			GetContext(graphics)->VSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
+			break;
+		}
 	}
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
 	UINT slot;
+	BufferType bufferType;
 };

@@ -155,7 +155,10 @@
     <ClCompile Include="Bindable.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\dr_impl.cpp" />
     <ClCompile Include="SoLoud\audiosource\wav\soloud_wav.cpp" />
@@ -181,6 +184,7 @@
     <ClCompile Include="SoLoud\core\soloud_queue.cpp" />
     <ClCompile Include="SoLoud\core\soloud_thread.cpp" />
     <ClCompile Include="SoundPlayer.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
@@ -191,7 +195,10 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="InputLayout.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PixelShader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SoLoud\audiosource\wav\dr_flac.h" />
@@ -232,6 +239,8 @@
     <ClInclude Include="SoLoud\include\soloud_wavstream.h" />
     <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="ThrowMacros.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
