@@ -3,13 +3,7 @@
 #include <string>
 #include <vector>
 #include <DirectXMath.h>
-#include "ConstantBuffer.h"
 #include <memory>
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "InputLayout.h"
-#include "PixelShader.h"
-#include "VertexShader.h"
 
 enum ShaderType
 {

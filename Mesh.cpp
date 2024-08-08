@@ -6,6 +6,12 @@
 #include <string>
 #include "Graphics.h"
 #include <cassert>
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "InputLayout.h"
+#include "PixelShader.h"
+#include "VertexShader.h"
+#include "ConstantBuffer.h"
 
 Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& rotation, const DirectX::XMVECTOR& scale) :
 	position(position),

@@ -7,10 +7,13 @@ public:
 	int Run();
 
 private:
-	void EvaluateHit(const float timeFromStart, const float timeStep) noexcept;
-	void PerfectHit() noexcept;
-	void GoodHit() noexcept;
-	void MissedHit() noexcept;
+	enum HitType
+	{
+		Perfect,
+		Good,
+		Miss
+	};
+	HitType EvaluateHit(const double timeFromStart, const float timeStep) noexcept;
 
 private:
 	Window window;

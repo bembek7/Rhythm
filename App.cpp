@@ -14,8 +14,8 @@ int App::Run()
 		unsigned int bpm;
 	} mainSong;
 
-	mainSong.fileName = "120bpmTest.wav";
-	mainSong.bpm = 120;
+	mainSong.fileName = "100bpmTest.wav";
+	mainSong.bpm = 100;
 	const float beatsPerSecond = mainSong.bpm / 60.f;
 	const float timeStep = 1 / beatsPerSecond;
 
@@ -30,9 +30,9 @@ int App::Run()
 	Camera camera;
 	window.GetGraphics().SetCamera(camera.GetMatrix()); // Should be set every frame if doing camera movement
 
-	auto start = std::chrono::steady_clock::now();
 	soundPlayer.Play(true);
-
+	auto start = std::chrono::steady_clock::now();
+	float sphereGreenParameter = 0.5f;
 	while (true)
 	{
 		if (const auto ecode = Window::ProcessMessages())
@@ -41,61 +41,38 @@ int App::Run()
 		}
 
 		const float timeFromStart = std::chrono::duration<float>(std::chrono::steady_clock::now() - start).count();
-		float blueFactor = float(std::cos(timeFromStart * 2 * std::numbers::pi / timeStep) + 1.f) / 2;
-		blueFactor = blueFactor * blueFactor;
-		const DirectX::XMFLOAT4 newColor = { 0.0f, blueFactor / 1.5f, blueFactor, 1.0f };
-		sphere.SetColor(window.GetGraphics(), newColor);
-		planeLight.SetDiffuseColor(window.GetGraphics(), sphere.GetColor());
+		double currentPlaytime = (timeFromStart + soundPlayer.GetCurrentPlaytime()) / 2; // Get current playtime has low granularity
 
 		while (!window.IsKeyQueueEmpty())
 		{
 			const short keyPressed = window.PopPressedKey();
 			if (keyPressed == VK_LBUTTON)
 			{
-				EvaluateHit(timeFromStart, timeStep);
+				HitType hitType = EvaluateHit(currentPlaytime, timeStep);
+				switch (hitType)
+				{
+				case Perfect:
+					sphereGreenParameter += 0.1f;
+					break;
+				case Good:
+					sphereGreenParameter += 0.05f;
+					break;
+				case Miss:
+					sphereGreenParameter -= 0.15f;
+					break;
+				}
 			}
 		}
 
-		/*if (window.IsKeyPressed('W'))
-		{
-			plane.AddPosition({ 0.f,0.f,0.1f });
-		}
-		if (window.IsKeyPressed('S'))
-		{
-			plane.AddPosition({ 0.f,0.f,-0.1f });
-		}
-		if (window.IsKeyPressed('Q'))
-		{
-			plane.AddRotation({ 0.f,0.f,0.1f });
-		}
-		if (window.IsKeyPressed('E'))
-		{
-			plane.AddRotation({ 0.f,0.f,-0.1f });
-		}
-		if (window.IsKeyPressed(VK_RIGHT))
-		{
-			plane.AddRotation({ 0.f,0.1f,0.f });
-		}
-		if (window.IsKeyPressed(VK_LEFT))
-		{
-			plane.AddRotation({ 0.f,-0.1f,0.f });
-		}
-		if (window.IsKeyPressed(VK_UP))
-		{
-			plane.AddRotation({ 0.1f,0.f,0.f });
-		}
-		if (window.IsKeyPressed(VK_DOWN))
-		{
-			plane.AddRotation({ -0.1f,0.f,0.f });
-		}
-		if (window.IsKeyPressed('A'))
-		{
-			plane.Scale(0.9f);
-		}
-		if (window.IsKeyPressed('D'))
-		{
-			plane.Scale(1.1f);
-		}*/
+		float timeColorFactor = float(std::cos(currentPlaytime * 2 * std::numbers::pi / timeStep) + 1.f) / 2;
+		timeColorFactor = timeColorFactor * timeColorFactor;
+
+		sphereGreenParameter = std::clamp(sphereGreenParameter, 0.f, 1.f);
+		const float sphereRedParameter = 1.f - sphereGreenParameter;
+		const DirectX::XMFLOAT4 newColor = { timeColorFactor * sphereRedParameter, timeColorFactor * sphereGreenParameter, 0.0f, 1.0f };
+
+		sphere.SetColor(window.GetGraphics(), newColor);
+		planeLight.SetDiffuseColor(window.GetGraphics(), sphere.GetColor());
 
 		window.GetGraphics().BeginFrame();
 		sphereLight.Bind(window.GetGraphics());
@@ -108,36 +85,21 @@ int App::Run()
 	return 0;
 }
 
-void App::EvaluateHit(const float timeFromStart, const float timeStep) noexcept
+App::HitType App::EvaluateHit(const double timeFromStart, const float timeStep) noexcept
 {
-	float missTime = std::fmod(timeFromStart, timeStep);
+	double missTime = std::fmod(timeFromStart, timeStep);
 	if (missTime > timeStep / 2)
 	{
 		missTime = std::abs(timeStep - missTime);
 	}
 
-	if (missTime < 0.075f)
+	if (missTime < 0.1f)
 	{
-		PerfectHit();
+		return Perfect;
 	}
 	else if (missTime < 0.15f)
 	{
-		GoodHit();
+		return Good;
 	}
-	else
-	{
-		MissedHit();
-	}
-}
-
-void App::PerfectHit() noexcept
-{
-}
-
-void App::GoodHit() noexcept
-{
-}
-
-void App::MissedHit() noexcept
-{
+	return Miss;
 }

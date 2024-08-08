@@ -22,16 +22,13 @@
     <Filter Include="SoLoud\backend">
       <UniqueIdentifier>{99476174-3dd9-45aa-8c6e-f666e660038f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SoLoud\c_api">
-      <UniqueIdentifier>{4f96806c-7d6e-4d10-929c-dc2b81321330}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SoLoud\core">
       <UniqueIdentifier>{50a539ce-4145-4632-85ef-1db3bb222147}</UniqueIdentifier>
     </Filter>
     <Filter Include="SoLoud\audiosource\wav">
       <UniqueIdentifier>{993a7dc9-3669-4b5d-a161-b9933239ea32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SoLoud\audiosource\include">
+    <Filter Include="SoLoud\include">
       <UniqueIdentifier>{4001cb0b-2afc-46ea-9299-58cad85aceb9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -168,100 +165,100 @@
       <Filter>SoLoud\audiosource\wav</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_audiosource.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_bassboostfilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_biquadresonantfilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_bus.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_c.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_dcremovalfilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_echofilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_error.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_fader.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_fft.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_fftfilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_file.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_file_hack_off.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_file_hack_on.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_filter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_flangerfilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_internal.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_lofifilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_monotone.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_openmpt.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_queue.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_robotizefilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_sfxr.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_speech.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_tedsid.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_thread.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_vic.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_vizsn.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_wav.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_waveshaperfilter.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="SoLoud\include\soloud_wavstream.h">
-      <Filter>SoLoud\audiosource\include</Filter>
+      <Filter>SoLoud\include</Filter>
     </ClInclude>
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
