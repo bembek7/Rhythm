@@ -12,7 +12,8 @@ template<typename Structure>
 class ConstantBuffer : public Bindable
 {
 public:
-	ConstantBuffer(Graphics& graphics, const Structure& data, const BufferType bufferType, const UINT slot = 0u) :
+	ConstantBuffer(Graphics& graphics, const Structure* const data, const BufferType bufferType, const UINT slot = 0u) :
+		bufferData(data),
 		bufferType(bufferType),
 		slot(slot)
 	{
@@ -20,17 +21,17 @@ public:
 		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		bufferDesc.ByteWidth = sizeof(data);
-		D3D11_SUBRESOURCE_DATA bufferData = {};
-		bufferData.pSysMem = &data;
+		bufferDesc.ByteWidth = sizeof(*bufferData);
+		D3D11_SUBRESOURCE_DATA subData = {};
+		subData.pSysMem = bufferData;
 
-		CHECK_HR(GetDevice(graphics)->CreateBuffer(&bufferDesc, &bufferData, &constantBuffer));
+		CHECK_HR(GetDevice(graphics)->CreateBuffer(&bufferDesc, &subData, &constantBuffer));
 	}
-	void Update(Graphics& graphics, const Structure& data)
+	virtual void Update(Graphics& graphics) override
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 		CHECK_HR(GetContext(graphics)->Map(constantBuffer.Get(), 0u, D3D11_MAP_WRITE_DISCARD, 0u, &mappedSubresource));
-		memcpy(mappedSubresource.pData, &data, sizeof(data));
+		memcpy(mappedSubresource.pData, bufferData, sizeof(*bufferData));
 		GetContext(graphics)->Unmap(constantBuffer.Get(), 0u);
 	}
 	void Bind(Graphics& graphics) noexcept
@@ -47,6 +48,7 @@ public:
 	}
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantBuffer;
+	const Structure* const bufferData;
 	UINT slot;
 	BufferType bufferType;
 };

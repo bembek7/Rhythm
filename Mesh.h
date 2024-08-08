@@ -34,7 +34,7 @@ public:
 private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
 	void LoadModel(const std::string fileName);
-	void UpdateTransformBuffer(Graphics& graphics);
+	void SetTransformBuffer(Graphics& graphics);
 
 private:
 	struct Vertex {
@@ -45,11 +45,7 @@ private:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	std::unique_ptr<PixelShader> pixelShader;
-	std::unique_ptr<IndexBuffer> indexBuffer;
-	std::unique_ptr<VertexBuffer<Vertex>> vertexBuffer;
-	std::unique_ptr<InputLayout> inputLayout;
-	std::unique_ptr<VertexShader> vertexShader;
+	std::vector<std::unique_ptr<Bindable>> bindables;
 
 	struct TransformBuffer
 	{
@@ -62,7 +58,6 @@ private:
 		DirectX::XMMATRIX transformViewProjection;
 	};
 	TransformBuffer transformBuffer;
-	std::unique_ptr<ConstantBuffer<TransformBuffer>> constantTransformBuffer;
 
 	struct ColorBuffer
 	{
@@ -73,7 +68,6 @@ private:
 		DirectX::XMFLOAT4 color;
 	};
 	ColorBuffer colorBuffer = { { 1.0f, 1.0f, 1.0f, 1.0f } };
-	std::unique_ptr<ConstantBuffer<ColorBuffer>> constantColorBuffer;
 
 	DirectX::XMVECTOR position = { 0.f, 0.f, 5.f };
 	DirectX::XMVECTOR rotation = { 0.f, 0.f, 0.f };

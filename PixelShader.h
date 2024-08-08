@@ -9,5 +9,4 @@ public:
 	void Bind(Graphics& graphics) noexcept;
 private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 };

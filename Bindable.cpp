@@ -1,5 +1,8 @@
 #include "Bindable.h"
 
+void Bindable::Update(Graphics& graphics)
+{}
+
 ID3D11DeviceContext* Bindable::GetContext(Graphics& graphics) noexcept
 {
 	return graphics.context.Get();

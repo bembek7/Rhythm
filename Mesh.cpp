@@ -29,35 +29,31 @@ Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shad
 		break;
 	}
 
-	constantColorBuffer = std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, colorBuffer, Pixel);
-	pixelShader = std::make_unique<PixelShader>(graphics, pixelShaderPath);
-	vertexBuffer = std::make_unique<VertexBuffer<Vertex>>(graphics, vertices);
-	indexBuffer = std::make_unique<IndexBuffer>(graphics, indices);
-	constantTransformBuffer = std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, transformBuffer, BufferType::Vertex);
-	vertexShader = std::make_unique<VertexShader>(graphics, vertexShaderPath);
+	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, &colorBuffer, Pixel));
+	bindables.push_back(std::make_unique<PixelShader>(graphics, pixelShaderPath));
+	bindables.push_back(std::make_unique<VertexBuffer<Vertex>>(graphics, vertices));
+	bindables.push_back(std::make_unique<IndexBuffer>(graphics, indices));
+	bindables.push_back(std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, &transformBuffer, BufferType::Vertex));
+	auto vertexShader = std::make_unique<VertexShader>(graphics, vertexShaderPath);
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDescs =
 	{
 		{"POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"NORMAL", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
-	inputLayout = std::make_unique<InputLayout>(graphics, inputElementDescs, vertexShader->GetBlob());
+	bindables.push_back(std::make_unique<InputLayout>(graphics, inputElementDescs, vertexShader->GetBlob()));
+	bindables.push_back(std::move(vertexShader));
 }
 
 void Mesh::Draw(Graphics& graphics)
 {
-	pixelShader->Bind(graphics);
-	constantColorBuffer->Bind(graphics);
+	SetTransformBuffer(graphics); // in this case dos not have to be updated every frame but wif wee add any movement of camera or object it should be
 
-	indexBuffer->Bind(graphics);
-	vertexBuffer->Bind(graphics);
-
-	UpdateTransformBuffer(graphics);
-	constantTransformBuffer->Bind(graphics);
-
-	vertexShader->Bind(graphics);
-
-	inputLayout->Bind(graphics);
+	for (auto& bindable : bindables)
+	{
+		bindable->Update(graphics);
+		bindable->Bind(graphics);
+	}
 
 	graphics.DrawIndexed(indices.size());
 }
@@ -80,7 +76,6 @@ void Mesh::Scale(const float scaleFactor) noexcept
 void Mesh::SetColor(Graphics& graphics, const DirectX::XMFLOAT4& newColor)
 {
 	colorBuffer = newColor;
-	constantColorBuffer->Update(graphics, colorBuffer);
 }
 
 DirectX::XMFLOAT3 Mesh::GetColor() const noexcept
@@ -139,10 +134,9 @@ void Mesh::LoadModel(const std::string fileName)
 	assert(vertices.size() > 0 && indices.size() > 0);
 }
 
-void Mesh::UpdateTransformBuffer(Graphics& graphics)
+void Mesh::SetTransformBuffer(Graphics& graphics)
 {
 	DirectX::XMMATRIX transformView = DirectX::XMMatrixTranspose(GetTransformMatrix() * graphics.GetCamera());
 	DirectX::XMMATRIX transformViewProjection = DirectX::XMMatrixTranspose(GetTransformMatrix() * graphics.GetCamera() * graphics.GetProjection());
 	transformBuffer = TransformBuffer(std::move(transformView), std::move(transformViewProjection));
-	constantTransformBuffer->Update(graphics, transformBuffer);
 }

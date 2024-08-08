@@ -12,6 +12,5 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR pCmdLi
 	{
 		MessageBox(nullptr, e.what(), nullptr, MB_ICONERROR | MB_OK);
 	}
-
 	return 0;
 }

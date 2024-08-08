@@ -5,6 +5,7 @@
 
 PixelShader::PixelShader(Graphics& graphics, std::wstring shaderPath)
 {
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 	CHECK_HR(D3DReadFileToBlob(shaderPath.c_str(), &blob));
 	CHECK_HR(GetDevice(graphics)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
 }

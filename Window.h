@@ -9,7 +9,7 @@
 class Window
 {
 public:
-	Window();
+	Window(const unsigned int clientAreaWidth = 800, const unsigned int clientAreaHeight = 600);
 	~Window() = default;
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
@@ -31,6 +31,4 @@ private:
 	std::queue<short> keyPressedEvents;
 	bool keys[255] = { false };
 	static constexpr char winClassName[] = "RythmWindow";
-	const unsigned int windowWidth = 800;
-	const unsigned int windowHeight = 600;
 };

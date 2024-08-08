@@ -5,7 +5,7 @@
 #include <string>
 #include <errhandlingapi.h>
 
-Window::Window()
+Window::Window(const unsigned int clientAreaWidth, const unsigned int clientAreaHeight)
 {
 	WNDCLASSEX windowClass = {};
 	windowClass.cbSize = sizeof(WNDCLASSEX);
@@ -17,16 +17,13 @@ Window::Window()
 
 	RECT windowRect{};
 	windowRect.left = 100;
-	windowRect.right = windowWidth + windowRect.left;
+	windowRect.right = clientAreaWidth + windowRect.left;
 	windowRect.top = 100;
-	windowRect.bottom = windowHeight + windowRect.top;
+	windowRect.bottom = clientAreaHeight + windowRect.top;
 	if (AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE) == 0)
 	{
 		throw std::runtime_error("Can't establish window rect");
 	}
-
-	const unsigned int clientAreaWidth = windowRect.right - windowRect.left;
-	const unsigned int clientAreaHeight = windowRect.bottom - windowRect.top;
 
 	hWnd = CreateWindowEx(
 		0,
@@ -35,8 +32,8 @@ Window::Window()
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		clientAreaWidth,
-		clientAreaHeight,
+		windowRect.right - windowRect.left,
+		windowRect.bottom - windowRect.top,
 		nullptr,
 		nullptr,
 		GetModuleHandle(nullptr),
