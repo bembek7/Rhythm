@@ -2,7 +2,7 @@
 #include "ThrowMacros.h"
 #include "Bindable.h"
 
-enum BufferType
+enum class BufferType
 {
 	Pixel,
 	Vertex
@@ -38,10 +38,10 @@ public:
 	{
 		switch (bufferType)
 		{
-		case Pixel:
+		case BufferType::Pixel:
 			GetContext(graphics)->PSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
 			break;
-		case Vertex:
+		case BufferType::Vertex:
 			GetContext(graphics)->VSSetConstantBuffers(slot, 1u, constantBuffer.GetAddressOf());
 			break;
 		}

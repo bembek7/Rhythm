@@ -23,8 +23,8 @@ int App::Run()
 
 	soundPlayer.LoadSong(mainSong.fileName);
 
-	Mesh plane = Mesh(window.GetGraphics(), "plane.obj", Phong, {0.f, 0.f, 7.f}, {0.f, 0.f, 0.f}, {10.f, 10.f, 1.f});
-	Mesh sphere = Mesh(window.GetGraphics(), "sphere.obj", Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
+	Mesh plane = Mesh(window.GetGraphics(), "plane.obj", ShaderType::Phong, {0.f, 0.f, 7.f}, {0.f, 0.f, 0.f}, {10.f, 10.f, 1.f});
+	Mesh sphere = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	PointLight planeLight = PointLight(window.GetGraphics(), sphere.GetPosition());
 	PointLight sphereLight = PointLight(window.GetGraphics(), { 0.f, 0.f, 0.f });
 	Camera camera;
@@ -51,13 +51,13 @@ int App::Run()
 				HitType hitType = EvaluateHit(currentPlaytime, timeStep);
 				switch (hitType)
 				{
-				case Perfect:
+				case HitType::Perfect:
 					sphereGreenParameter += 0.1f;
 					break;
-				case Good:
+				case HitType::Good:
 					sphereGreenParameter += 0.05f;
 					break;
-				case Miss:
+				case HitType::Miss:
 					sphereGreenParameter -= 0.15f;
 					break;
 				}
@@ -95,11 +95,11 @@ App::HitType App::EvaluateHit(const double timeFromStart, const float timeStep) 
 
 	if (missTime < 0.1f)
 	{
-		return Perfect;
+		return HitType::Perfect;
 	}
 	else if (missTime < 0.15f)
 	{
-		return Good;
+		return HitType::Good;
 	}
-	return Miss;
+	return HitType::Miss;
 }

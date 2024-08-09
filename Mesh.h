@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include <memory>
 
-enum ShaderType
+enum class ShaderType
 {
 	Solid,
 	Phong

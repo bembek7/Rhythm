@@ -25,17 +25,17 @@ Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shad
 
 	switch (shaderType)
 	{
-	case Solid:
+	case ShaderType::Solid:
 		pixelShaderPath = L"PixelShader.cso";
 		vertexShaderPath = L"VertexShader.cso";
 		break;
-	case Phong:
+	case ShaderType::Phong:
 		pixelShaderPath = L"PhongPS.cso";
 		vertexShaderPath = L"PhongVS.cso";
 		break;
 	}
 
-	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, &colorBuffer, Pixel));
+	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, &colorBuffer, BufferType::Pixel));
 	bindables.push_back(std::make_unique<PixelShader>(graphics, pixelShaderPath));
 	bindables.push_back(std::make_unique<VertexBuffer<Vertex>>(graphics, vertices));
 	bindables.push_back(std::make_unique<IndexBuffer>(graphics, indices));

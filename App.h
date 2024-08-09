@@ -7,7 +7,7 @@ public:
 	int Run();
 
 private:
-	enum HitType
+	enum class HitType
 	{
 		Perfect,
 		Good,
@@ -16,5 +16,5 @@ private:
 	HitType EvaluateHit(const double timeFromStart, const float timeStep) noexcept;
 
 private:
-	Window window;
+	Window window = Window(1600, 900);
 };
