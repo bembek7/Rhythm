@@ -6,7 +6,7 @@ class PixelShader : public Bindable
 {
 public:
 	PixelShader(Graphics& graphics, std::wstring shaderPath);
-	void Bind(Graphics& graphics) noexcept;
+	virtual void Bind(Graphics& graphics) noexcept override;
 private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
 };

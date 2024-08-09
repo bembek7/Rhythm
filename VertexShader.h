@@ -6,7 +6,7 @@ class VertexShader : public Bindable
 {
 public:
 	VertexShader(Graphics& graphics, std::wstring shaderPath);
-	void Bind(Graphics& graphics) noexcept;
+	virtual void Bind(Graphics& graphics) noexcept override;
 	ID3DBlob* GetBlob() noexcept;
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;

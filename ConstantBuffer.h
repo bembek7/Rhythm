@@ -34,7 +34,7 @@ public:
 		memcpy(mappedSubresource.pData, bufferData, sizeof(*bufferData));
 		GetContext(graphics)->Unmap(constantBuffer.Get(), 0u);
 	}
-	void Bind(Graphics& graphics) noexcept
+	virtual void Bind(Graphics& graphics) noexcept override
 	{
 		switch (bufferType)
 		{

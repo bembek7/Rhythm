@@ -20,7 +20,7 @@ public:
 
 		CHECK_HR(GetDevice(graphics)->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &vertexBuffer));
 	}
-	void Bind(Graphics& graphics) noexcept
+	virtual void Bind(Graphics& graphics) noexcept override
 	{
 		const UINT stride = sizeof(Vertex);
 		const UINT offset = 0u;

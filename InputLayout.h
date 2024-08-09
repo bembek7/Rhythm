@@ -6,7 +6,7 @@ class InputLayout : public Bindable
 {
 public:
 	InputLayout(Graphics& graphics, const std::vector<D3D11_INPUT_ELEMENT_DESC>& inputElementDescs, ID3DBlob* shaderBlob);
-	void Bind(Graphics& graphics) noexcept;
+	virtual void Bind(Graphics& graphics) noexcept override;
 private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 };
