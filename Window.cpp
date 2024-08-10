@@ -123,7 +123,7 @@ LRESULT Window::HandleMessage(const HWND hWnd, const UINT uMsg, const WPARAM wPa
 	switch (uMsg)
 	{
 	case WM_KILLFOCUS:
-		std::fill(keys, keys + std::size(keys), false);
+		keys.fill(false);
 		break;
 	case WM_LBUTTONDOWN:
 		if (!keys[VK_LBUTTON])

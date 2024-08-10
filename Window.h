@@ -29,6 +29,6 @@ private:
 	HWND hWnd;
 	std::unique_ptr<Graphics> graphics;
 	std::queue<short> keyPressedEvents;
-	bool keys[255] = { false };
+	std::array<bool, 255> keys = { false };
 	static constexpr char winClassName[] = "RythmWindow";
 };
