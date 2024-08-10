@@ -12,8 +12,8 @@ template<typename Structure>
 class ConstantBuffer : public Bindable
 {
 public:
-	ConstantBuffer(Graphics& graphics, const Structure* const data, const BufferType bufferType, const UINT slot = 0u) :
-		bufferData(data),
+	ConstantBuffer(Graphics& graphics, const Structure& data, const BufferType bufferType, const UINT slot = 0u) :
+		bufferData(&data),
 		bufferType(bufferType),
 		slot(slot)
 	{
@@ -21,9 +21,9 @@ public:
 		bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		bufferDesc.ByteWidth = sizeof(*bufferData);
+		bufferDesc.ByteWidth = sizeof(data);
 		D3D11_SUBRESOURCE_DATA subData = {};
-		subData.pSysMem = bufferData;
+		subData.pSysMem = &data;
 
 		CHECK_HR(GetDevice(graphics)->CreateBuffer(&bufferDesc, &subData, &constantBuffer));
 	}

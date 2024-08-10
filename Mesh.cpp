@@ -35,11 +35,11 @@ Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shad
 		break;
 	}
 
-	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, &colorBuffer, BufferType::Pixel));
+	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, colorBuffer, BufferType::Pixel));
 	bindables.push_back(std::make_unique<PixelShader>(graphics, pixelShaderPath));
 	bindables.push_back(std::make_unique<VertexBuffer<Vertex>>(graphics, vertices));
 	bindables.push_back(std::make_unique<IndexBuffer>(graphics, indices));
-	bindables.push_back(std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, &transformBuffer, BufferType::Vertex));
+	bindables.push_back(std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, transformBuffer, BufferType::Vertex));
 	auto vertexShader = std::make_unique<VertexShader>(graphics, vertexShaderPath);
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDescs =
