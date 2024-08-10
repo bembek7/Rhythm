@@ -47,7 +47,7 @@ Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shad
 		{"POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"NORMAL", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
-	bindables.push_back(std::make_unique<InputLayout>(graphics, inputElementDescs, vertexShader->GetBlob()));
+	bindables.push_back(std::make_unique<InputLayout>(graphics, inputElementDescs, vertexShader->GetBufferPointer(), vertexShader->GetBufferSize()));
 	bindables.push_back(std::move(vertexShader));
 }
 

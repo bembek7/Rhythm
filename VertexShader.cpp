@@ -15,7 +15,13 @@ void VertexShader::Bind(Graphics& graphics) noexcept
 	GetContext(graphics)->VSSetShader(vertexShader.Get(), nullptr, 0u);
 }
 
-ID3DBlob* VertexShader::GetBlob() noexcept
+LPVOID VertexShader::GetBufferPointer() noexcept
 {
-	return blob.Get();
+	return blob->GetBufferPointer();
 }
+
+size_t VertexShader::GetBufferSize() const noexcept
+{
+	return blob->GetBufferSize();
+}
+
