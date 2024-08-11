@@ -1,8 +1,5 @@
 #include "Mesh.h"
 #include "Graphics.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <stdexcept>
 #include <string>
 #include <cassert>
@@ -18,7 +15,7 @@ Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType sha
 	rotation(rotation),
 	scale(scale)
 {
-	LoadModel(fileName);
+	model = std::make_unique<Model>(fileName);
 
 	std::wstring pixelShaderPath;
 	std::wstring vertexShaderPath;
@@ -37,8 +34,8 @@ Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType sha
 
 	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, colorBuffer, BufferType::Pixel));
 	bindables.push_back(std::make_unique<PixelShader>(graphics, pixelShaderPath));
-	bindables.push_back(std::make_unique<VertexBuffer<Vertex>>(graphics, vertices));
-	bindables.push_back(std::make_unique<IndexBuffer>(graphics, indices));
+	bindables.push_back(std::make_unique<VertexBuffer<Model::Vertex>>(graphics, model->vertices));
+	bindables.push_back(std::make_unique<IndexBuffer>(graphics, model->indices));
 	bindables.push_back(std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, transformBuffer, BufferType::Vertex));
 	auto vertexShader = std::make_unique<VertexShader>(graphics, vertexShaderPath);
 
@@ -61,7 +58,7 @@ void Mesh::Draw(Graphics& graphics)
 		bindable->Bind(graphics);
 	}
 
-	graphics.DrawIndexed(indices.size());
+	graphics.DrawIndexed(model->indices.size());
 }
 
 void Mesh::AddRotation(const DirectX::XMVECTOR& rotationToAdd) noexcept
@@ -99,45 +96,6 @@ DirectX::XMFLOAT3 Mesh::GetPosition() const noexcept
 DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 {
 	return DirectX::XMMatrixScalingFromVector(scale) * DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
-}
-
-void Mesh::LoadModel(const std::string& fileName)
-{
-	Assimp::Importer importer;
-
-	const aiScene* scene = importer.ReadFile(fileName,
-		aiProcess_CalcTangentSpace |
-		aiProcess_Triangulate |
-		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType |
-		aiProcess_GenNormals
-	);
-
-	if (!scene)
-	{
-		throw std::runtime_error(importer.GetErrorString());
-	}
-
-	const unsigned int numVertices = scene->mMeshes[0]->mNumVertices;
-
-	vertices.reserve(numVertices);
-
-	assert(scene->mMeshes[0]->HasNormals());
-	for (size_t i = 0; i < numVertices; i++)
-	{
-		vertices.push_back(Vertex(scene->mMeshes[0]->mVertices[i].x, scene->mMeshes[0]->mVertices[i].y, scene->mMeshes[0]->mVertices[i].z,
-			scene->mMeshes[0]->mNormals[i].x, scene->mMeshes[0]->mNormals[i].y, scene->mMeshes[0]->mNormals[i].z));
-	}
-
-	for (size_t i = 0; i < scene->mMeshes[0]->mNumFaces; i++)
-	{
-		for (size_t j = 0; j < scene->mMeshes[0]->mFaces[i].mNumIndices; j++)
-		{
-			indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[j]);
-		}
-	}
-
-	assert(vertices.size() > 0 && indices.size() > 0);
 }
 
 void Mesh::SetTransformBuffer(Graphics& graphics)

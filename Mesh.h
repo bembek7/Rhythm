@@ -1,10 +1,10 @@
 #pragma once
-#include "BetterWindows.h"
 #include <string>
 #include <vector>
 #include <DirectXMath.h>
 #include <memory>
 #include "Bindable.h"
+#include "Model.h"
 
 class Graphics;
 
@@ -30,21 +30,12 @@ public:
 
 private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
-	void LoadModel(const std::string& fileName);
 	void SetTransformBuffer(Graphics& graphics);
 
 private:
-	struct Vertex {
-		Vertex(const float x, const float y, const float z, const float nx, const float ny, const float nz) : position(x, y, z), normal(nx, ny, nz) {}
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 normal;
-	};
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-
 	std::vector<std::unique_ptr<Bindable>> bindables;
-
 	std::vector<std::shared_ptr<Bindable>> sharedBindables;
+	std::unique_ptr<Model> model;
 
 	struct TransformBuffer
 	{
