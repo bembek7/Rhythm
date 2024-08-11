@@ -67,7 +67,7 @@ std::optional<int> Window::ProcessMessages()
 	return {};
 }
 
-void Window::SetWidnowTitle(const std::string newTitle) noexcept
+void Window::SetWidnowTitle(const std::string& newTitle) noexcept
 {
 	SetWindowText(hWnd, newTitle.c_str());
 }

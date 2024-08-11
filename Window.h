@@ -14,7 +14,7 @@ public:
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	static std::optional<int> ProcessMessages();
-	void SetWidnowTitle(const std::string newTitle) noexcept;
+	void SetWidnowTitle(const std::string& newTitle) noexcept;
 	bool IsKeyQueueEmpty() const noexcept;
 	short PopPressedKey() noexcept;
 	bool IsKeyPressed(const short key) const noexcept;

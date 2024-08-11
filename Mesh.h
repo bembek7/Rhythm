@@ -1,9 +1,12 @@
 #pragma once
-#include "Graphics.h"
+#include "BetterWindows.h"
 #include <string>
 #include <vector>
 #include <DirectXMath.h>
 #include <memory>
+#include "Bindable.h"
+
+class Graphics;
 
 enum class ShaderType
 {
@@ -14,7 +17,7 @@ enum class ShaderType
 class Mesh
 {
 public:
-	Mesh(Graphics& graphics, const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position = { 0.f, 0.f, 5.f }, const DirectX::XMVECTOR& rotation = { 0.f, 0.f, 0.f }, const DirectX::XMVECTOR& scale = { 1.f, 1.f, 1.f });
+	Mesh(Graphics& graphics, const std::string& fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position = { 0.f, 0.f, 5.f }, const DirectX::XMVECTOR& rotation = { 0.f, 0.f, 0.f }, const DirectX::XMVECTOR& scale = { 1.f, 1.f, 1.f });
 
 	void Draw(Graphics& graphics);
 
@@ -27,7 +30,7 @@ public:
 
 private:
 	DirectX::XMMATRIX GetTransformMatrix() const noexcept;
-	void LoadModel(const std::string fileName);
+	void LoadModel(const std::string& fileName);
 	void SetTransformBuffer(Graphics& graphics);
 
 private:
@@ -40,6 +43,8 @@ private:
 	std::vector<unsigned int> indices;
 
 	std::vector<std::unique_ptr<Bindable>> bindables;
+
+	std::vector<std::shared_ptr<Bindable>> sharedBindables;
 
 	struct TransformBuffer
 	{

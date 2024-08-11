@@ -1,10 +1,10 @@
 #include "Mesh.h"
+#include "Graphics.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <stdexcept>
 #include <string>
-#include "Graphics.h"
 #include <cassert>
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -13,7 +13,7 @@
 #include "VertexShader.h"
 #include "ConstantBuffer.h"
 
-Mesh::Mesh(Graphics& graphics, const std::string fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& rotation, const DirectX::XMVECTOR& scale) :
+Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& rotation, const DirectX::XMVECTOR& scale) :
 	position(position),
 	rotation(rotation),
 	scale(scale)
@@ -101,7 +101,7 @@ DirectX::XMMATRIX Mesh::GetTransformMatrix() const noexcept
 	return DirectX::XMMatrixScalingFromVector(scale) * DirectX::XMMatrixRotationRollPitchYawFromVector(rotation) * DirectX::XMMatrixTranslationFromVector(position);
 }
 
-void Mesh::LoadModel(const std::string fileName)
+void Mesh::LoadModel(const std::string& fileName)
 {
 	Assimp::Importer importer;
 
