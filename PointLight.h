@@ -1,7 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
-#include "Graphics.h"
 #include "ConstantBuffer.h"
+
+class Graphics;
 
 class PointLight
 {

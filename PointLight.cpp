@@ -1,5 +1,6 @@
 #include "PointLight.h"
 #include "ThrowMacros.h"
+#include "Graphics.h"
 
 PointLight::PointLight(Graphics& graphics, const DirectX::XMFLOAT3& position)
 {

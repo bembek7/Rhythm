@@ -3,8 +3,8 @@
 #include <optional>
 #include <string>
 #include <queue>
-#include "Graphics.h"
 #include <memory>
+#include "Graphics.h"
 
 class Window
 {

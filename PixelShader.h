@@ -1,6 +1,7 @@
 #pragma once
 #include "Bindable.h"
 #include <string>
+#include <wrl\client.h>
 
 class PixelShader : public Bindable
 {
