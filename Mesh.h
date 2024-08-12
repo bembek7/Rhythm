@@ -35,7 +35,7 @@ private:
 private:
 	std::vector<std::unique_ptr<Bindable>> bindables;
 	std::vector<std::shared_ptr<Bindable>> sharedBindables;
-	std::unique_ptr<Model> model;
+	std::shared_ptr<Model> model;
 
 	struct TransformBuffer
 	{

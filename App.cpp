@@ -24,7 +24,13 @@ int App::Run()
 	soundPlayer.LoadSong(mainSong.fileName);
 
 	Mesh plane = Mesh(window.GetGraphics(), "plane.obj", ShaderType::Phong, {0.f, 0.f, 7.f}, {0.f, 0.f, 0.f}, {10.f, 10.f, 1.f});
+	{
+		Mesh sphere1 = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { 5.f, 5.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
+	}
 	Mesh sphere = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
+	
+	Mesh sphere2 = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { 2.f, 2.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
+	Mesh sphere3 = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { -3.f, -3.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	PointLight planeLight = PointLight(window.GetGraphics(), sphere.GetPosition());
 	PointLight sphereLight = PointLight(window.GetGraphics(), { 0.f, 0.f, 0.f });
 	Camera camera;
@@ -77,6 +83,8 @@ int App::Run()
 		window.GetGraphics().BeginFrame();
 		sphereLight.Bind(window.GetGraphics());
 		sphere.Draw(window.GetGraphics());
+		sphere2.Draw(window.GetGraphics());
+		sphere3.Draw(window.GetGraphics());
 		planeLight.Bind(window.GetGraphics());
 		plane.Draw(window.GetGraphics());
 		window.GetGraphics().EndFrame();

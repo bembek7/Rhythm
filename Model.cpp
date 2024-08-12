@@ -5,7 +5,8 @@
 #include <assimp/postprocess.h>
 #include <stdexcept>
 
-Model::Model(const std::string& fileName)
+Model::Model(const std::string& fileName) :
+	fileName(fileName)
 {
 	Assimp::Importer importer;
 
