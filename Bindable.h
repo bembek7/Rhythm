@@ -9,6 +9,7 @@ class Bindable
 public:
 	virtual void Bind(Graphics& graphics) noexcept = 0;
 	virtual void Update(Graphics& graphics);
+	virtual std::string GetID() const noexcept { return ""; };
 	virtual ~Bindable() = default;
 protected:
 	static ID3D11DeviceContext* GetContext(Graphics& graphics) noexcept;

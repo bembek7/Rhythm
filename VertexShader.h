@@ -6,7 +6,7 @@
 class VertexShader : public Bindable
 {
 public:
-	VertexShader(Graphics& graphics, std::wstring shaderPath);
+	VertexShader(Graphics& graphics, const std::wstring& shaderPath);
 	virtual void Bind(Graphics& graphics) noexcept override;
 	LPVOID GetBufferPointer() noexcept;
 	size_t GetBufferSize() const noexcept;

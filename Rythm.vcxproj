@@ -187,6 +187,7 @@
     <ClCompile Include="SoLoud\core\soloud_queue.cpp" />
     <ClCompile Include="SoLoud\core\soloud_thread.cpp" />
     <ClCompile Include="SoundPlayer.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="SoLoud\include\soloud_wavstream.h" />
     <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="ThrowMacros.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Window.h" />

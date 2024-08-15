@@ -4,7 +4,7 @@
 #include "ThrowMacros.h"
 #include "Graphics.h"
 
-VertexShader::VertexShader(Graphics& graphics, std::wstring shaderPath)
+VertexShader::VertexShader(Graphics& graphics, const std::wstring& shaderPath)
 {
 	CHECK_HR(D3DReadFileToBlob(shaderPath.c_str(), &blob));
 	CHECK_HR(GetDevice(graphics)->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));

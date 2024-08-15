@@ -10,6 +10,7 @@
 #include "VertexShader.h"
 #include "ConstantBuffer.h"
 #include "ModelsPool.h"
+#include "BindablesPool.h"
 
 Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType shaderType, const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& rotation, const DirectX::XMVECTOR& scale) :
 	position(position),
@@ -32,9 +33,10 @@ Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType sha
 		vertexShaderPath = L"PhongVS.cso";
 		break;
 	}
+	auto& bindablesPool = BindablesPool::GetInstance();
 
 	bindables.push_back(std::make_unique<ConstantBuffer<ColorBuffer>>(graphics, colorBuffer, BufferType::Pixel));
-	bindables.push_back(std::make_unique<PixelShader>(graphics, pixelShaderPath));
+	sharedBindables.push_back(bindablesPool.GetBindable<PixelShader>(graphics, pixelShaderPath));
 	bindables.push_back(std::make_unique<VertexBuffer<Model::Vertex>>(graphics, model->vertices));
 	bindables.push_back(std::make_unique<IndexBuffer>(graphics, model->indices));
 	bindables.push_back(std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, transformBuffer, BufferType::Vertex));
@@ -51,12 +53,18 @@ Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType sha
 
 void Mesh::Draw(Graphics& graphics)
 {
-	SetTransformBuffer(graphics); // in this case dos not have to be updated every frame but wif wee add any movement of camera or object it should be
+	SetTransformBuffer(graphics); // in this case does not have to be updated every frame but wif wee add any movement of camera or object it should be
 
 	for (auto& bindable : bindables)
 	{
 		bindable->Update(graphics);
 		bindable->Bind(graphics);
+	}
+
+	for (auto& sharedBindable : sharedBindables)
+	{
+		sharedBindable->Update(graphics);
+		sharedBindable->Bind(graphics);
 	}
 
 	graphics.DrawIndexed(model->indices.size());
