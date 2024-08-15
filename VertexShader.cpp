@@ -15,7 +15,7 @@ void VertexShader::Bind(Graphics& graphics) noexcept
 	GetContext(graphics)->VSSetShader(vertexShader.Get(), nullptr, 0u);
 }
 
-LPVOID VertexShader::GetBufferPointer() noexcept
+LPVOID VertexShader::GetBufferPointer() const noexcept
 {
 	return blob->GetBufferPointer();
 }

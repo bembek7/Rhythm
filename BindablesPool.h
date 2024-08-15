@@ -3,6 +3,7 @@
 #include<string>
 #include<memory>
 #include "Bindable.h"
+#include "VertexShader.h"
 
 class BindablesPool
 {

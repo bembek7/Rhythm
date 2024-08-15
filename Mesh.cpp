@@ -40,15 +40,16 @@ Mesh::Mesh(Graphics& graphics, const std::string& fileName, const ShaderType sha
 	bindables.push_back(std::make_unique<VertexBuffer<Model::Vertex>>(graphics, model->vertices));
 	bindables.push_back(std::make_unique<IndexBuffer>(graphics, model->indices));
 	bindables.push_back(std::make_unique<ConstantBuffer<TransformBuffer>>(graphics, transformBuffer, BufferType::Vertex));
-	auto vertexShader = std::make_unique<VertexShader>(graphics, vertexShaderPath);
+	auto vertexShader = bindablesPool.GetBindable<VertexShader>(graphics, vertexShaderPath);
+	const VertexShader& vertexShaderRef = dynamic_cast<VertexShader&>(*vertexShader);
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDescs =
 	{
 		{"POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 		{"NORMAL", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u},
 	};
-	bindables.push_back(std::make_unique<InputLayout>(graphics, inputElementDescs, vertexShader->GetBufferPointer(), vertexShader->GetBufferSize()));
-	bindables.push_back(std::move(vertexShader));
+	bindables.push_back(std::make_unique<InputLayout>(graphics, inputElementDescs, vertexShaderRef.GetBufferPointer(), vertexShaderRef.GetBufferSize()));
+	sharedBindables.push_back(std::move(vertexShader));
 }
 
 void Mesh::Draw(Graphics& graphics)
