@@ -29,7 +29,7 @@ int App::Run()
 	}
 	Mesh sphere = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { 0.f, 0.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	
-	Mesh sphere2 = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { 2.f, 2.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
+	Mesh sphere2 = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Solid, { 1.f, 1.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	Mesh sphere3 = Mesh(window.GetGraphics(), "sphere.obj", ShaderType::Phong, { -3.f, -3.f, 6.f }, { 0.f, 0.f, 0.f }, { 0.5f, 0.5f, 0.5f });
 	PointLight planeLight = PointLight(window.GetGraphics(), sphere.GetPosition());
 	PointLight sphereLight = PointLight(window.GetGraphics(), { 0.f, 0.f, 0.f });

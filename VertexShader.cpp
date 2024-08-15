@@ -3,9 +3,11 @@
 #include <string>
 #include "ThrowMacros.h"
 #include "Graphics.h"
+#include "Utils.h"
 
 VertexShader::VertexShader(Graphics& graphics, const std::wstring& shaderPath)
 {
+	id = WstringToString(shaderPath);
 	CHECK_HR(D3DReadFileToBlob(shaderPath.c_str(), &blob));
 	CHECK_HR(GetDevice(graphics)->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));
 }

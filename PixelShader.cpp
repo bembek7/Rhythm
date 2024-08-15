@@ -6,7 +6,7 @@
 
 PixelShader::PixelShader(Graphics& graphics, const std::wstring& shaderPath)
 {
-	path = WstringToString(shaderPath);
+	id = WstringToString(shaderPath);
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 	CHECK_HR(D3DReadFileToBlob(shaderPath.c_str(), &blob));
 	CHECK_HR(GetDevice(graphics)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader));
@@ -15,9 +15,4 @@ PixelShader::PixelShader(Graphics& graphics, const std::wstring& shaderPath)
 void PixelShader::Bind(Graphics& graphics) noexcept
 {
 	GetContext(graphics)->PSSetShader(pixelShader.Get(), nullptr, 0u);
-}
-
-std::string PixelShader::GetID() const noexcept
-{
-	return path;
 }
