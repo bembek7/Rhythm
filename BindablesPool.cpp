@@ -3,6 +3,6 @@
 
 BindablesPool& BindablesPool::GetInstance()
 {
-    static BindablesPool instance;
-    return instance;
+	static BindablesPool instance;
+	return instance;
 }
