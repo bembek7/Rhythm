@@ -4,7 +4,7 @@
 #include <DirectXMath.h>
 
 // could be struct now, but maybe expended later
-class Model 
+class Model
 {
 public:
 	Model(const std::string& fileName);
@@ -19,4 +19,3 @@ public:
 	std::vector<unsigned int> indices;
 	std::string fileName;
 };
-

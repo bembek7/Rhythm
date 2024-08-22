@@ -5,7 +5,6 @@
 #include <string>
 #include <errhandlingapi.h>
 
-
 Window::Window(const unsigned int clientAreaWidth, const unsigned int clientAreaHeight)
 {
 	WNDCLASSEX windowClass = {};

@@ -26,4 +26,3 @@ size_t VertexShader::GetBufferSize() const noexcept
 {
 	return blob->GetBufferSize();
 }
-
